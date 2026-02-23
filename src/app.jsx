@@ -18,127 +18,261 @@ const BUILD_CONFIG = {
   "—":              { icon: "", color: "transparent" },
 };
 
+// ── Extensible extra fields ────────────────────────────────────────────────────
+// Add new entries here to introduce additional fields to all nodes.
+// Each field appears in the display card, edit form, and add-child form automatically.
+// type: "select" renders a dropdown; "text" renders a free-text input.
+const EXTRA_FIELDS = [
+  {
+    key: "aiType",
+    label: "AI Type",
+    type: "select",
+    options: ["—", "Gen AI", "Agentic AI", "ML", "NLP", "Computer Vision", "Rule-Based"],
+    icon: "🧠",
+    defaultValue: "—",
+  },
+  {
+    key: "trainingRequired",
+    label: "Training/Context Req.",
+    type: "select",
+    options: ["—", "Yes – Training", "Yes – Context", "No"],
+    icon: "🎓",
+    defaultValue: "—",
+  },
+  // To add more fields, append an object here, e.g.:
+  // { key: "priority", label: "Priority", type: "select", options: ["—","High","Medium","Low"], icon: "⚡", defaultValue: "—" },
+];
+
 let nextId = 100;
 const makeId = () => `node_${nextId++}`;
-const BLANK = { name:"", description:"", status:"Not Started", owner:"", model:"", buildType:"—", children:[] };
+const BLANK = {
+  name: "", description: "", status: "Not Started", owner: "", model: "", buildType: "—",
+  ...Object.fromEntries(EXTRA_FIELDS.map(f => [f.key, f.defaultValue])),
+  children: [],
+};
 
-function updateNode(tree,id,u){if(tree.id===id)return{...tree,...u};return{...tree,children:tree.children.map(c=>updateNode(c,id,u))};}
-function deleteNode(tree,id){return{...tree,children:tree.children.filter(c=>c.id!==id).map(c=>deleteNode(c,id))};}
-function addChild(tree,pid,child){if(tree.id===pid)return{...tree,children:[...tree.children,child]};return{...tree,children:tree.children.map(c=>addChild(c,pid,child))};}
-function collectLeaves(n,a=[]){if(!n.children||n.children.length===0){a.push(n);return a;}n.children.forEach(c=>collectLeaves(c,a));return a;}
-function getAllOwners(n,s=new Set()){if(n.owner&&n.owner!=="—")s.add(n.owner);n.children?.forEach(c=>getAllOwners(c,s));return s;}
+function updateNode(tree, id, u) { if (tree.id === id) return { ...tree, ...u }; return { ...tree, children: tree.children.map(c => updateNode(c, id, u)) }; }
+function deleteNode(tree, id) { return { ...tree, children: tree.children.filter(c => c.id !== id).map(c => deleteNode(c, id)) }; }
+function addChild(tree, pid, child) { if (tree.id === pid) return { ...tree, children: [...tree.children, child] }; return { ...tree, children: tree.children.map(c => addChild(c, pid, child)) }; }
+function moveChild(tree, id, dir) {
+  const idx = tree.children.findIndex(c => c.id === id);
+  if (idx !== -1) {
+    const ni = dir === "up" ? idx - 1 : idx + 1;
+    if (ni < 0 || ni >= tree.children.length) return tree;
+    const ch = [...tree.children];
+    [ch[idx], ch[ni]] = [ch[ni], ch[idx]];
+    return { ...tree, children: ch };
+  }
+  return { ...tree, children: tree.children.map(c => moveChild(c, id, dir)) };
+}
+function collectLeaves(n, a = []) { if (!n.children || n.children.length === 0) { a.push(n); return a; } n.children.forEach(c => collectLeaves(c, a)); return a; }
+function getAllOwners(n, s = new Set()) { if (n.owner && n.owner !== "—") s.add(n.owner); n.children?.forEach(c => getAllOwners(c, s)); return s; }
 
 const initialData = {
-  id:"root",name:"Data Platform",description:"Central hub for all AI integrations",status:"In Progress",owner:"Platform Team",model:"—",buildType:"—",
-  children:[
-    {id:"ingestion",name:"Data Ingestion",description:"Agents managing data pipelines and ETL workflows",status:"In Progress",owner:"Data Eng",model:"—",buildType:"—",children:[
-      {id:"schema",name:"Schema Detector",description:"Automatically detects and maps incoming data schemas",status:"Completed",owner:"Alice",model:"GPT-4o",buildType:"Web LLM API",children:[]},
-      {id:"cleaner",name:"Data Cleaner",description:"Identifies and resolves data quality issues in real-time",status:"In Progress",owner:"Bob",model:"Claude Sonnet",buildType:"Claude Project",children:[]},
-    ]},
-    {id:"analytics",name:"Analytics",description:"AI-powered analytics and insight generation",status:"In Progress",owner:"Analytics Team",model:"—",buildType:"—",children:[
-      {id:"nlq",name:"NL Query Agent",description:"Translates natural language questions into SQL queries",status:"Completed",owner:"Carol",model:"Claude Opus",buildType:"Claude Project",children:[]},
-      {id:"anomaly",name:"Anomaly Detector",description:"Flags statistical anomalies in streaming data",status:"In Progress",owner:"Dave",model:"Llama 3",buildType:"Local LLM API",children:[]},
-      {id:"forecast",name:"Forecasting Agent",description:"Generates predictive models for KPI forecasting",status:"Not Started",owner:"Eve",model:"GPT-4o",buildType:"Web LLM API",children:[]},
-    ]},
-    {id:"governance",name:"Governance",description:"Data quality, compliance, and lineage agents",status:"Not Started",owner:"Governance Team",model:"—",buildType:"—",children:[
-      {id:"pii",name:"PII Redactor",description:"Scans and redacts personally identifiable information",status:"Not Started",owner:"Frank",model:"Claude Haiku",buildType:"Claude Project",children:[]},
-      {id:"lineage",name:"Lineage Tracer",description:"Tracks data lineage across the entire platform",status:"Not Started",owner:"Grace",model:"Mistral",buildType:"Local LLM API",children:[]},
-    ]},
+  id: "root", name: "Data Platform", description: "Central hub for all AI integrations", status: "In Progress", owner: "Platform Team", model: "—", buildType: "—", aiType: "—", trainingRequired: "—",
+  children: [
+    {
+      id: "ingestion", name: "Data Ingestion", description: "Agents managing data pipelines and ETL workflows", status: "In Progress", owner: "Data Eng", model: "—", buildType: "—", aiType: "—", trainingRequired: "—",
+      children: [
+        { id: "schema", name: "Schema Detector", description: "Automatically detects and maps incoming data schemas", status: "Completed", owner: "Alice", model: "GPT-4o", buildType: "Web LLM API", aiType: "Gen AI", trainingRequired: "No", children: [] },
+        { id: "cleaner", name: "Data Cleaner", description: "Identifies and resolves data quality issues in real-time", status: "In Progress", owner: "Bob", model: "Claude Sonnet", buildType: "Claude Project", aiType: "Agentic AI", trainingRequired: "Yes – Context", children: [] },
+      ],
+    },
+    {
+      id: "analytics", name: "Analytics", description: "AI-powered analytics and insight generation", status: "In Progress", owner: "Analytics Team", model: "—", buildType: "—", aiType: "—", trainingRequired: "—",
+      children: [
+        { id: "nlq", name: "NL Query Agent", description: "Translates natural language questions into SQL queries", status: "Completed", owner: "Carol", model: "Claude Opus", buildType: "Claude Project", aiType: "Gen AI", trainingRequired: "Yes – Context", children: [] },
+        { id: "anomaly", name: "Anomaly Detector", description: "Flags statistical anomalies in streaming data", status: "In Progress", owner: "Dave", model: "Llama 3", buildType: "Local LLM API", aiType: "ML", trainingRequired: "Yes – Training", children: [] },
+        { id: "forecast", name: "Forecasting Agent", description: "Generates predictive models for KPI forecasting", status: "Not Started", owner: "Eve", model: "GPT-4o", buildType: "Web LLM API", aiType: "ML", trainingRequired: "Yes – Training", children: [] },
+      ],
+    },
+    {
+      id: "governance", name: "Governance", description: "Data quality, compliance, and lineage agents", status: "Not Started", owner: "Governance Team", model: "—", buildType: "—", aiType: "—", trainingRequired: "—",
+      children: [
+        { id: "pii", name: "PII Redactor", description: "Scans and redacts personally identifiable information", status: "Not Started", owner: "Frank", model: "Claude Haiku", buildType: "Claude Project", aiType: "NLP", trainingRequired: "No", children: [] },
+        { id: "lineage", name: "Lineage Tracer", description: "Tracks data lineage across the entire platform", status: "Not Started", owner: "Grace", model: "Mistral", buildType: "Local LLM API", aiType: "Rule-Based", trainingRequired: "No", children: [] },
+      ],
+    },
   ],
 };
 
-const inputStyle={background:"#0a1240",border:"1px solid #3C405B",borderRadius:6,padding:"5px 9px",fontSize:12,color:"#FFFFFF",fontFamily:"Roboto,sans-serif",outline:"none",width:160};
-const selectStyle={...inputStyle,width:"auto",minWidth:140,cursor:"pointer"};
+const inputStyle = { background: "#0a1240", border: "1px solid #3C405B", borderRadius: 6, padding: "5px 9px", fontSize: 12, color: "#FFFFFF", fontFamily: "Roboto,sans-serif", outline: "none", width: 160 };
+const selectStyle = { ...inputStyle, width: "auto", minWidth: 140, cursor: "pointer" };
 
-function Field({label,children}){return(<label style={{display:"flex",flexDirection:"column",gap:3,fontSize:11,color:"#D8D7EE",fontFamily:"Roboto,sans-serif"}}><span style={{textTransform:"uppercase",letterSpacing:"0.06em",fontSize:10,color:"#00AB63"}}>{label}</span>{children}</label>);}
+function Field({ label, children }) {
+  return (
+    <label style={{ display: "flex", flexDirection: "column", gap: 3, fontSize: 11, color: "#D8D7EE", fontFamily: "Roboto,sans-serif" }}>
+      <span style={{ textTransform: "uppercase", letterSpacing: "0.06em", fontSize: 10, color: "#00AB63" }}>{label}</span>
+      {children}
+    </label>
+  );
+}
 
-function Btn({onClick,primary,children}){const[h,sH]=useState(false);return(<button onClick={onClick} onMouseEnter={()=>sH(true)} onMouseLeave={()=>sH(false)} style={{background:primary?(h?"#008a4f":"#00AB63"):(h?"#3C405B":"#1e2240"),color:primary?"#02072D":"#D8D7EE",border:"none",borderRadius:7,padding:"6px 16px",fontSize:12,cursor:"pointer",fontWeight:700,fontFamily:"Roboto,sans-serif",transition:"background 0.15s"}}>{children}</button>);}
+function Btn({ onClick, primary, children }) {
+  const [h, sH] = useState(false);
+  return (
+    <button onClick={onClick} onMouseEnter={() => sH(true)} onMouseLeave={() => sH(false)}
+      style={{ background: primary ? (h ? "#008a4f" : "#00AB63") : (h ? "#3C405B" : "#1e2240"), color: primary ? "#02072D" : "#D8D7EE", border: "none", borderRadius: 7, padding: "6px 16px", fontSize: 12, cursor: "pointer", fontWeight: 700, fontFamily: "Roboto,sans-serif", transition: "background 0.15s" }}>
+      {children}
+    </button>
+  );
+}
 
-function ActionBtn({onClick,title,danger,children}){const[h,sH]=useState(false);return(<button onClick={onClick} title={title} onMouseEnter={()=>sH(true)} onMouseLeave={()=>sH(false)} style={{background:h?(danger?"#3d0a0a":"#3C405B"):"transparent",border:`1px solid ${danger?"#7f1d1d":"#3C405B"}`,borderRadius:6,padding:"2px 7px",fontSize:12,cursor:"pointer",color:danger?"#f87171":"#D8D7EE",transition:"background 0.15s"}}>{children}</button>);}
+function ActionBtn({ onClick, title, danger, disabled, children }) {
+  const [h, sH] = useState(false);
+  return (
+    <button onClick={onClick} title={title} disabled={disabled}
+      onMouseEnter={() => sH(true)} onMouseLeave={() => sH(false)}
+      style={{ background: h && !disabled ? (danger ? "#3d0a0a" : "#3C405B") : "transparent", border: `1px solid ${danger ? "#7f1d1d" : "#3C405B"}`, borderRadius: 6, padding: "2px 7px", fontSize: 12, cursor: disabled ? "default" : "pointer", color: disabled ? "#3C405B" : (danger ? "#f87171" : "#D8D7EE"), transition: "background 0.15s", opacity: disabled ? 0.4 : 1 }}>
+      {children}
+    </button>
+  );
+}
 
-function NodeCard({node,depth,filters,onEdit,onDelete,onAddChild,isRoot}){
-  const[expanded,setExpanded]=useState(depth<1);
-  const[editing,setEditing]=useState(false);
-  const[adding,setAdding]=useState(false);
-  const[form,setForm]=useState({...node});
-  const[newNode,setNewNode]=useState({...BLANK});
-  const hasChildren=node.children?.length>0;
-  const sc=STATUS_CONFIG[node.status]||STATUS_CONFIG["Not Started"];
-  const bc=BUILD_CONFIG[node.buildType]||BUILD_CONFIG["—"];
-  const depthAccent=depth===0?BRAND.green:depth===1?BRAND.blue:BRAND.darkGray;
-  const headerBg=depth===0?BRAND.midnightLight:depth===1?"#071040":"#0d1535";
+function NodeCard({ node, depth, filters, onEdit, onDelete, onAddChild, onMove, siblingIndex, siblingCount, isRoot }) {
+  const [expanded, setExpanded] = useState(depth < 1);
+  const [editing, setEditing] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const [form, setForm] = useState({ ...node });
+  const [newNode, setNewNode] = useState({ ...BLANK });
+  const hasChildren = node.children?.length > 0;
+  const sc = STATUS_CONFIG[node.status] || STATUS_CONFIG["Not Started"];
+  const bc = BUILD_CONFIG[node.buildType] || BUILD_CONFIG["—"];
+  const depthAccent = depth === 0 ? BRAND.green : depth === 1 ? BRAND.blue : BRAND.darkGray;
+  const headerBg = depth === 0 ? BRAND.midnightLight : depth === 1 ? "#071040" : "#0d1535";
 
-  function nodePassesFilters(n){
-    if(!n.children||n.children.length===0){
-      return(!filters.status||n.status===filters.status)&&(!filters.owner||n.owner===filters.owner)&&(!filters.buildType||n.buildType===filters.buildType);
+  function nodePassesFilters(n) {
+    if (!n.children || n.children.length === 0) {
+      return (!filters.status || n.status === filters.status) && (!filters.owner || n.owner === filters.owner) && (!filters.buildType || n.buildType === filters.buildType);
     }
-    return n.children.some(c=>nodePassesFilters(c));
+    return n.children.some(c => nodePassesFilters(c));
   }
-  if(!nodePassesFilters(node))return null;
+  if (!nodePassesFilters(node)) return null;
 
-  function saveEdit(){onEdit(node.id,form);setEditing(false);}
-  function saveNew(){if(!newNode.name.trim())return;onAddChild(node.id,{...newNode,id:makeId()});setNewNode({...BLANK});setAdding(false);setExpanded(true);}
+  function saveEdit() { onEdit(node.id, form); setEditing(false); }
+  function saveNew() { if (!newNode.name.trim()) return; onAddChild(node.id, { ...newNode, id: makeId() }); setNewNode({ ...BLANK }); setAdding(false); setExpanded(true); }
 
-  return(
-    <div style={{marginLeft:depth===0?0:20,marginTop:8}}>
-      <div style={{border:`1.5px solid ${depthAccent}`,borderRadius:10,background:BRAND.midnightLight,boxShadow:"0 2px 16px rgba(0,0,0,0.4)",overflow:"hidden"}}>
-        <div style={{display:"flex",alignItems:"center",gap:8,padding:"11px 14px",background:headerBg,cursor:hasChildren?"pointer":"default",userSelect:"none",borderBottom:`1px solid ${BRAND.darkGray}22`}} onClick={()=>hasChildren&&setExpanded(e=>!e)}>
-          {hasChildren&&<span style={{fontSize:13,color:depthAccent,minWidth:14}}>{expanded?"▾":"▸"}</span>}
-          <span style={{fontFamily:"'Titillium Web',sans-serif",fontWeight:700,fontSize:depth===0?17:14,color:BRAND.white,flex:1}}>{node.name}</span>
-          <span style={{background:sc.bg,color:sc.text,border:`1px solid ${sc.border}44`,borderRadius:99,padding:"2px 10px",fontSize:11,fontWeight:600,display:"inline-flex",alignItems:"center",gap:4,whiteSpace:"nowrap",fontFamily:"Roboto,sans-serif"}}>
-            <span style={{width:7,height:7,borderRadius:"50%",background:sc.dot}}/>
+  const isFirst = siblingIndex === 0;
+  const isLast = siblingIndex === siblingCount - 1;
+
+  return (
+    <div style={{ marginLeft: depth === 0 ? 0 : 20, marginTop: 8 }}>
+      <div style={{ border: `1.5px solid ${depthAccent}`, borderRadius: 10, background: BRAND.midnightLight, boxShadow: "0 2px 16px rgba(0,0,0,0.4)", overflow: "hidden" }}>
+
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "11px 14px", background: headerBg, cursor: hasChildren ? "pointer" : "default", userSelect: "none", borderBottom: `1px solid ${BRAND.darkGray}22` }} onClick={() => hasChildren && setExpanded(e => !e)}>
+          {hasChildren && <span style={{ fontSize: 13, color: depthAccent, minWidth: 14 }}>{expanded ? "▾" : "▸"}</span>}
+          <span style={{ fontFamily: "'Titillium Web',sans-serif", fontWeight: 700, fontSize: depth === 0 ? 17 : 14, color: BRAND.white, flex: 1 }}>{node.name}</span>
+          <span style={{ background: sc.bg, color: sc.text, border: `1px solid ${sc.border}44`, borderRadius: 99, padding: "2px 10px", fontSize: 11, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4, whiteSpace: "nowrap", fontFamily: "Roboto,sans-serif" }}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: sc.dot }} />
             {node.status}
           </span>
-          <div style={{display:"flex",gap:4}} onClick={e=>e.stopPropagation()}>
-            <ActionBtn onClick={()=>{setEditing(e=>!e);setForm({...node});}} title="Edit">✏️</ActionBtn>
-            <ActionBtn onClick={()=>setAdding(a=>!a)} title="Add child">＋</ActionBtn>
-            {!isRoot&&<ActionBtn onClick={()=>{if(window.confirm(`Delete "${node.name}" and all its children?`))onDelete(node.id);}} title="Delete" danger>🗑</ActionBtn>}
+          <div style={{ display: "flex", gap: 4 }} onClick={e => e.stopPropagation()}>
+            {!isRoot && (
+              <>
+                <ActionBtn onClick={() => onMove(node.id, "up")} title="Move up" disabled={isFirst}>↑</ActionBtn>
+                <ActionBtn onClick={() => onMove(node.id, "down")} title="Move down" disabled={isLast}>↓</ActionBtn>
+              </>
+            )}
+            <ActionBtn onClick={() => { setEditing(e => !e); setForm({ ...node }); }} title="Edit">✏️</ActionBtn>
+            <ActionBtn onClick={() => setAdding(a => !a)} title="Add child">＋</ActionBtn>
+            {!isRoot && <ActionBtn onClick={() => { if (window.confirm(`Delete "${node.name}" and all its children?`)) onDelete(node.id); }} title="Delete" danger>🗑</ActionBtn>}
           </div>
         </div>
 
-        {!editing&&(
-          <div style={{padding:"8px 14px 10px",fontSize:12,color:BRAND.coolGray,display:"flex",flexWrap:"wrap",gap:"5px 18px",fontFamily:"Roboto,sans-serif"}}>
-            <span style={{color:"#a0a9c8"}}>📝 {node.description}</span>
-            <span>👤 <b style={{color:BRAND.white}}>{node.owner}</b></span>
-            {node.model!=="—"&&node.model&&<span>🤖 <b style={{color:BRAND.white}}>{node.model}</b></span>}
-            {node.buildType!=="—"&&node.buildType&&<span style={{color:bc.color}}>{bc.icon} <b>{node.buildType}</b></span>}
+        {/* Display view */}
+        {!editing && (
+          <div style={{ padding: "8px 14px 10px", fontSize: 12, color: BRAND.coolGray, display: "flex", flexWrap: "wrap", gap: "5px 18px", fontFamily: "Roboto,sans-serif" }}>
+            <span style={{ color: "#a0a9c8" }}>📝 {node.description}</span>
+            <span>👤 <b style={{ color: BRAND.white }}>{node.owner}</b></span>
+            {node.model !== "—" && node.model && <span>🤖 <b style={{ color: BRAND.white }}>{node.model}</b></span>}
+            {node.buildType !== "—" && node.buildType && <span style={{ color: bc.color }}>{bc.icon} <b>{node.buildType}</b></span>}
+            {EXTRA_FIELDS.map(f => {
+              const val = node[f.key];
+              if (!val || val === "—") return null;
+              return <span key={f.key}>{f.icon} <b style={{ color: BRAND.white }}>{val}</b></span>;
+            })}
           </div>
         )}
 
-        {editing&&(
-          <div style={{padding:"12px 14px",background:"#040d2a",display:"flex",flexWrap:"wrap",gap:10,borderTop:`1px solid ${BRAND.darkGray}`}} onClick={e=>e.stopPropagation()}>
-            <Field label="Name"><input style={inputStyle} value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))}/></Field>
-            <Field label="Description"><input style={{...inputStyle,width:220}} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/></Field>
-            <Field label="Owner"><input style={inputStyle} value={form.owner} onChange={e=>setForm(f=>({...f,owner:e.target.value}))}/></Field>
-            <Field label="Model"><input style={inputStyle} value={form.model} onChange={e=>setForm(f=>({...f,model:e.target.value}))}/></Field>
-            <Field label="Status"><select style={selectStyle} value={form.status} onChange={e=>setForm(f=>({...f,status:e.target.value}))}>
-              {Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
-            <Field label="Build Type"><select style={selectStyle} value={form.buildType} onChange={e=>setForm(f=>({...f,buildType:e.target.value}))}>
-              {Object.keys(BUILD_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
-            <div style={{display:"flex",alignItems:"flex-end",gap:6}}><Btn onClick={saveEdit} primary>Save</Btn><Btn onClick={()=>setEditing(false)}>Cancel</Btn></div>
+        {/* Edit form */}
+        {editing && (
+          <div style={{ padding: "12px 14px", background: "#040d2a", display: "flex", flexWrap: "wrap", gap: 10, borderTop: `1px solid ${BRAND.darkGray}` }} onClick={e => e.stopPropagation()}>
+            <Field label="Name"><input style={inputStyle} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></Field>
+            <Field label="Description"><input style={{ ...inputStyle, width: 220 }} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></Field>
+            <Field label="Owner"><input style={inputStyle} value={form.owner} onChange={e => setForm(f => ({ ...f, owner: e.target.value }))} /></Field>
+            <Field label="Model"><input style={inputStyle} value={form.model} onChange={e => setForm(f => ({ ...f, model: e.target.value }))} /></Field>
+            <Field label="Status">
+              <select style={selectStyle} value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))}>
+                {Object.keys(STATUS_CONFIG).map(s => <option key={s}>{s}</option>)}
+              </select>
+            </Field>
+            <Field label="Build Type">
+              <select style={selectStyle} value={form.buildType} onChange={e => setForm(f => ({ ...f, buildType: e.target.value }))}>
+                {Object.keys(BUILD_CONFIG).map(s => <option key={s}>{s}</option>)}
+              </select>
+            </Field>
+            {EXTRA_FIELDS.map(f => (
+              <Field key={f.key} label={f.label}>
+                {f.type === "select" ? (
+                  <select style={selectStyle} value={form[f.key] ?? f.defaultValue} onChange={e => setForm(ff => ({ ...ff, [f.key]: e.target.value }))}>
+                    {f.options.map(o => <option key={o}>{o}</option>)}
+                  </select>
+                ) : (
+                  <input style={inputStyle} value={form[f.key] ?? ""} onChange={e => setForm(ff => ({ ...ff, [f.key]: e.target.value }))} />
+                )}
+              </Field>
+            ))}
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
+              <Btn onClick={saveEdit} primary>Save</Btn>
+              <Btn onClick={() => setEditing(false)}>Cancel</Btn>
+            </div>
           </div>
         )}
 
-        {adding&&(
-          <div style={{padding:"12px 14px",background:"#030b22",display:"flex",flexWrap:"wrap",gap:10,borderTop:`1px solid ${BRAND.green}44`}} onClick={e=>e.stopPropagation()}>
-            <div style={{width:"100%",fontSize:11,color:BRAND.green,fontFamily:"'Titillium Web',sans-serif",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:2}}>＋ Add child to "{node.name}"</div>
-            <Field label="Name *"><input style={inputStyle} value={newNode.name} onChange={e=>setNewNode(f=>({...f,name:e.target.value}))} placeholder="Agent name"/></Field>
-            <Field label="Description"><input style={{...inputStyle,width:220}} value={newNode.description} onChange={e=>setNewNode(f=>({...f,description:e.target.value}))} placeholder="What does it do?"/></Field>
-            <Field label="Owner"><input style={inputStyle} value={newNode.owner} onChange={e=>setNewNode(f=>({...f,owner:e.target.value}))} placeholder="Name or team"/></Field>
-            <Field label="Model"><input style={inputStyle} value={newNode.model} onChange={e=>setNewNode(f=>({...f,model:e.target.value}))} placeholder="e.g. GPT-4o"/></Field>
-            <Field label="Status"><select style={selectStyle} value={newNode.status} onChange={e=>setNewNode(f=>({...f,status:e.target.value}))}>
-              {Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
-            <Field label="Build Type"><select style={selectStyle} value={newNode.buildType} onChange={e=>setNewNode(f=>({...f,buildType:e.target.value}))}>
-              {Object.keys(BUILD_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
-            <div style={{display:"flex",alignItems:"flex-end",gap:6}}><Btn onClick={saveNew} primary>Add</Btn><Btn onClick={()=>setAdding(false)}>Cancel</Btn></div>
+        {/* Add child form */}
+        {adding && (
+          <div style={{ padding: "12px 14px", background: "#030b22", display: "flex", flexWrap: "wrap", gap: 10, borderTop: `1px solid ${BRAND.green}44` }} onClick={e => e.stopPropagation()}>
+            <div style={{ width: "100%", fontSize: 11, color: BRAND.green, fontFamily: "'Titillium Web',sans-serif", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 2 }}>＋ Add child to "{node.name}"</div>
+            <Field label="Name *"><input style={inputStyle} value={newNode.name} onChange={e => setNewNode(f => ({ ...f, name: e.target.value }))} placeholder="Agent name" /></Field>
+            <Field label="Description"><input style={{ ...inputStyle, width: 220 }} value={newNode.description} onChange={e => setNewNode(f => ({ ...f, description: e.target.value }))} placeholder="What does it do?" /></Field>
+            <Field label="Owner"><input style={inputStyle} value={newNode.owner} onChange={e => setNewNode(f => ({ ...f, owner: e.target.value }))} placeholder="Name or team" /></Field>
+            <Field label="Model"><input style={inputStyle} value={newNode.model} onChange={e => setNewNode(f => ({ ...f, model: e.target.value }))} placeholder="e.g. GPT-4o" /></Field>
+            <Field label="Status">
+              <select style={selectStyle} value={newNode.status} onChange={e => setNewNode(f => ({ ...f, status: e.target.value }))}>
+                {Object.keys(STATUS_CONFIG).map(s => <option key={s}>{s}</option>)}
+              </select>
+            </Field>
+            <Field label="Build Type">
+              <select style={selectStyle} value={newNode.buildType} onChange={e => setNewNode(f => ({ ...f, buildType: e.target.value }))}>
+                {Object.keys(BUILD_CONFIG).map(s => <option key={s}>{s}</option>)}
+              </select>
+            </Field>
+            {EXTRA_FIELDS.map(f => (
+              <Field key={f.key} label={f.label}>
+                {f.type === "select" ? (
+                  <select style={selectStyle} value={newNode[f.key] ?? f.defaultValue} onChange={e => setNewNode(nn => ({ ...nn, [f.key]: e.target.value }))}>
+                    {f.options.map(o => <option key={o}>{o}</option>)}
+                  </select>
+                ) : (
+                  <input style={inputStyle} value={newNode[f.key] ?? ""} onChange={e => setNewNode(nn => ({ ...nn, [f.key]: e.target.value }))} />
+                )}
+              </Field>
+            ))}
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
+              <Btn onClick={saveNew} primary>Add</Btn>
+              <Btn onClick={() => setAdding(false)}>Cancel</Btn>
+            </div>
           </div>
         )}
       </div>
-      {hasChildren&&expanded&&(
-        <div style={{borderLeft:`2px dashed ${depthAccent}55`,marginLeft:16,paddingLeft:4}}>
-          {node.children.map(child=>(
-            <NodeCard key={child.id} node={child} depth={depth+1} filters={filters}
-              onEdit={onEdit} onDelete={onDelete} onAddChild={onAddChild} isRoot={false}/>
+
+      {hasChildren && expanded && (
+        <div style={{ borderLeft: `2px dashed ${depthAccent}55`, marginLeft: 16, paddingLeft: 4 }}>
+          {node.children.map((child, idx) => (
+            <NodeCard key={child.id} node={child} depth={depth + 1} filters={filters}
+              onEdit={onEdit} onDelete={onDelete} onAddChild={onAddChild} onMove={onMove}
+              siblingIndex={idx} siblingCount={node.children.length} isRoot={false} />
           ))}
         </div>
       )}
@@ -147,8 +281,9 @@ function NodeCard({node,depth,filters,onEdit,onDelete,onAddChild,isRoot}){
 }
 
 // ── HTML Export ───────────────────────────────────────────────────────────────
-function buildExportHTML(data) {
+function buildExportHTML(data, extraFields) {
   const jsonData = JSON.stringify(data, null, 2);
+  const jsonExtraFields = JSON.stringify(extraFields);
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -169,25 +304,28 @@ function buildExportHTML(data) {
 <body>
   <div id="root"></div>
   <script>window.__INITIAL_DATA__ = ${jsonData};</script>
+  <script>window.__EXTRA_FIELDS__ = ${jsonExtraFields};</script>
   <script type="text/babel">
     const{useState,useMemo}=React;
     const BRAND={blue:"#0D2C71",green:"#00AB63",midnight:"#02072D",darkGray:"#3C405B",coolGray:"#D8D7EE",white:"#FFFFFF",blueLight:"#1a3d8f",greenDark:"#008a4f",midnightLight:"#0a1240"};
     const STATUS_CONFIG={"Completed":{bg:"#003d24",text:"#00AB63",dot:"#00AB63",border:"#00AB63"},"In Progress":{bg:"#2a1e00",text:"#f5c842",dot:"#f5c842",border:"#f5c842"},"Not Started":{bg:"#1e2035",text:"#D8D7EE",dot:"#6b7280",border:"#3C405B"}};
     const BUILD_CONFIG={"Local LLM API":{icon:"🖥️",color:"#7c6af5"},"Claude Project":{icon:"🔷",color:"#00AB63"},"Web LLM API":{icon:"🌐",color:"#4a90d9"},"—":{icon:"",color:"transparent"}};
+    const EXTRA_FIELDS=window.__EXTRA_FIELDS__;
     let nextId=100;
     const makeId=()=>\`node_\${nextId++}\`;
-    const BLANK={name:"",description:"",status:"Not Started",owner:"",model:"",buildType:"—",children:[]};
+    const BLANK={name:"",description:"",status:"Not Started",owner:"",model:"",buildType:"—",...Object.fromEntries(EXTRA_FIELDS.map(f=>[f.key,f.defaultValue])),children:[]};
     function updateNode(t,id,u){if(t.id===id)return{...t,...u};return{...t,children:t.children.map(c=>updateNode(c,id,u))};}
     function deleteNode(t,id){return{...t,children:t.children.filter(c=>c.id!==id).map(c=>deleteNode(c,id))};}
     function addChild(t,pid,child){if(t.id===pid)return{...t,children:[...t.children,child]};return{...t,children:t.children.map(c=>addChild(c,pid,child))};}
+    function moveChild(t,id,dir){const i=t.children.findIndex(c=>c.id===id);if(i!==-1){const ni=dir==="up"?i-1:i+1;if(ni<0||ni>=t.children.length)return t;const ch=[...t.children];[ch[i],ch[ni]]=[ch[ni],ch[i]];return{...t,children:ch};}return{...t,children:t.children.map(c=>moveChild(c,id,dir))};}
     function collectLeaves(n,a=[]){if(!n.children||n.children.length===0){a.push(n);return a;}n.children.forEach(c=>collectLeaves(c,a));return a;}
     function getAllOwners(n,s=new Set()){if(n.owner&&n.owner!=="—")s.add(n.owner);n.children?.forEach(c=>getAllOwners(c,s));return s;}
     const iS={background:"#0a1240",border:"1px solid #3C405B",borderRadius:6,padding:"5px 9px",fontSize:12,color:"#FFFFFF",outline:"none",width:160};
     const sS={...iS,width:"auto",minWidth:140,cursor:"pointer"};
     function Field({label,children}){return(<label style={{display:"flex",flexDirection:"column",gap:3,fontSize:11,color:"#D8D7EE"}}><span style={{textTransform:"uppercase",letterSpacing:"0.06em",fontSize:10,color:"#00AB63"}}>{label}</span>{children}</label>);}
     function Btn({onClick,primary,children}){const[h,sH]=useState(false);return(<button onClick={onClick} onMouseEnter={()=>sH(true)} onMouseLeave={()=>sH(false)} style={{background:primary?(h?"#008a4f":"#00AB63"):(h?"#3C405B":"#1e2240"),color:primary?"#02072D":"#D8D7EE",border:"none",borderRadius:7,padding:"6px 16px",fontSize:12,cursor:"pointer",fontWeight:700,transition:"background 0.15s"}}>{children}</button>);}
-    function ActionBtn({onClick,title,danger,children}){const[h,sH]=useState(false);return(<button onClick={onClick} title={title} onMouseEnter={()=>sH(true)} onMouseLeave={()=>sH(false)} style={{background:h?(danger?"#3d0a0a":"#3C405B"):"transparent",border:\`1px solid \${danger?"#7f1d1d":"#3C405B"}\`,borderRadius:6,padding:"2px 7px",fontSize:12,cursor:"pointer",color:danger?"#f87171":"#D8D7EE",transition:"background 0.15s"}}>{children}</button>);}
-    function NodeCard({node,depth,filters,onEdit,onDelete,onAddChild,isRoot}){
+    function ActionBtn({onClick,title,danger,disabled,children}){const[h,sH]=useState(false);return(<button onClick={onClick} title={title} disabled={disabled} onMouseEnter={()=>sH(true)} onMouseLeave={()=>sH(false)} style={{background:h&&!disabled?(danger?"#3d0a0a":"#3C405B"):"transparent",border:\`1px solid \${danger?"#7f1d1d":"#3C405B"}\`,borderRadius:6,padding:"2px 7px",fontSize:12,cursor:disabled?"default":"pointer",color:disabled?"#3C405B":(danger?"#f87171":"#D8D7EE"),transition:"background 0.15s",opacity:disabled?0.4:1}}>{children}</button>);}
+    function NodeCard({node,depth,filters,onEdit,onDelete,onAddChild,onMove,siblingIndex,siblingCount,isRoot}){
       const[expanded,setExpanded]=useState(depth<1);
       const[editing,setEditing]=useState(false);
       const[adding,setAdding]=useState(false);
@@ -202,6 +340,8 @@ function buildExportHTML(data) {
       if(!npf(node))return null;
       function saveEdit(){onEdit(node.id,form);setEditing(false);}
       function saveNew(){if(!newNode.name.trim())return;onAddChild(node.id,{...newNode,id:makeId()});setNewNode({...BLANK});setAdding(false);setExpanded(true);}
+      const isFirst=siblingIndex===0;
+      const isLast=siblingIndex===siblingCount-1;
       return(<div style={{marginLeft:depth===0?0:20,marginTop:8}}>
         <div style={{border:\`1.5px solid \${depthAccent}\`,borderRadius:10,background:BRAND.midnightLight,boxShadow:"0 2px 16px rgba(0,0,0,0.4)",overflow:"hidden"}}>
           <div style={{display:"flex",alignItems:"center",gap:8,padding:"11px 14px",background:headerBg,cursor:hasChildren?"pointer":"default",userSelect:"none"}} onClick={()=>hasChildren&&setExpanded(e=>!e)}>
@@ -211,6 +351,7 @@ function buildExportHTML(data) {
               <span style={{width:7,height:7,borderRadius:"50%",background:sc.dot}}/>{node.status}
             </span>
             <div style={{display:"flex",gap:4}} onClick={e=>e.stopPropagation()}>
+              {!isRoot&&(<><ActionBtn onClick={()=>onMove(node.id,"up")} title="Move up" disabled={isFirst}>↑</ActionBtn><ActionBtn onClick={()=>onMove(node.id,"down")} title="Move down" disabled={isLast}>↓</ActionBtn></>)}
               <ActionBtn onClick={()=>{setEditing(e=>!e);setForm({...node});}} title="Edit">✏️</ActionBtn>
               <ActionBtn onClick={()=>setAdding(a=>!a)} title="Add child">＋</ActionBtn>
               {!isRoot&&<ActionBtn onClick={()=>{if(window.confirm(\`Delete "\${node.name}"?\`))onDelete(node.id);}} title="Delete" danger>🗑</ActionBtn>}
@@ -221,6 +362,7 @@ function buildExportHTML(data) {
             <span>👤 <b style={{color:BRAND.white}}>{node.owner}</b></span>
             {node.model!=="—"&&node.model&&<span>🤖 <b style={{color:BRAND.white}}>{node.model}</b></span>}
             {node.buildType!=="—"&&node.buildType&&<span style={{color:bc.color}}>{bc.icon} <b>{node.buildType}</b></span>}
+            {EXTRA_FIELDS.map(f=>{const val=node[f.key];if(!val||val==="—")return null;return<span key={f.key}>{f.icon} <b style={{color:BRAND.white}}>{val}</b></span>;})}
           </div>)}
           {editing&&(<div style={{padding:"12px 14px",background:"#040d2a",display:"flex",flexWrap:"wrap",gap:10,borderTop:\`1px solid \${BRAND.darkGray}\`}} onClick={e=>e.stopPropagation()}>
             <Field label="Name"><input style={iS} value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))}/></Field>
@@ -229,6 +371,7 @@ function buildExportHTML(data) {
             <Field label="Model"><input style={iS} value={form.model} onChange={e=>setForm(f=>({...f,model:e.target.value}))}/></Field>
             <Field label="Status"><select style={sS} value={form.status} onChange={e=>setForm(f=>({...f,status:e.target.value}))}>{Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
             <Field label="Build Type"><select style={sS} value={form.buildType} onChange={e=>setForm(f=>({...f,buildType:e.target.value}))}>{Object.keys(BUILD_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
+            {EXTRA_FIELDS.map(f=>(<Field key={f.key} label={f.label}>{f.type==="select"?(<select style={sS} value={form[f.key]??f.defaultValue} onChange={e=>setForm(ff=>({...ff,[f.key]:e.target.value}))}>{f.options.map(o=><option key={o}>{o}</option>)}</select>):(<input style={iS} value={form[f.key]??""} onChange={e=>setForm(ff=>({...ff,[f.key]:e.target.value}))}/>)}</Field>))}
             <div style={{display:"flex",alignItems:"flex-end",gap:6}}><Btn onClick={saveEdit} primary>Save</Btn><Btn onClick={()=>setEditing(false)}>Cancel</Btn></div>
           </div>)}
           {adding&&(<div style={{padding:"12px 14px",background:"#030b22",display:"flex",flexWrap:"wrap",gap:10,borderTop:\`1px solid \${BRAND.green}44\`}} onClick={e=>e.stopPropagation()}>
@@ -239,11 +382,12 @@ function buildExportHTML(data) {
             <Field label="Model"><input style={iS} value={newNode.model} onChange={e=>setNewNode(f=>({...f,model:e.target.value}))} placeholder="e.g. GPT-4o"/></Field>
             <Field label="Status"><select style={sS} value={newNode.status} onChange={e=>setNewNode(f=>({...f,status:e.target.value}))}>{Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
             <Field label="Build Type"><select style={sS} value={newNode.buildType} onChange={e=>setNewNode(f=>({...f,buildType:e.target.value}))}>{Object.keys(BUILD_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
+            {EXTRA_FIELDS.map(f=>(<Field key={f.key} label={f.label}>{f.type==="select"?(<select style={sS} value={newNode[f.key]??f.defaultValue} onChange={e=>setNewNode(nn=>({...nn,[f.key]:e.target.value}))}>{f.options.map(o=><option key={o}>{o}</option>)}</select>):(<input style={iS} value={newNode[f.key]??""} onChange={e=>setNewNode(nn=>({...nn,[f.key]:e.target.value}))}/>)}</Field>))}
             <div style={{display:"flex",alignItems:"flex-end",gap:6}}><Btn onClick={saveNew} primary>Add</Btn><Btn onClick={()=>setAdding(false)}>Cancel</Btn></div>
           </div>)}
         </div>
         {hasChildren&&expanded&&(<div style={{borderLeft:\`2px dashed \${depthAccent}55\`,marginLeft:16,paddingLeft:4}}>
-          {node.children.map(child=>(<NodeCard key={child.id} node={child} depth={depth+1} filters={filters} onEdit={onEdit} onDelete={onDelete} onAddChild={onAddChild} isRoot={false}/>))}
+          {node.children.map((child,idx)=>(<NodeCard key={child.id} node={child} depth={depth+1} filters={filters} onEdit={onEdit} onDelete={onDelete} onAddChild={onAddChild} onMove={onMove} siblingIndex={idx} siblingCount={node.children.length} isRoot={false}/>))}
         </div>)}
       </div>);
     }
@@ -253,6 +397,7 @@ function buildExportHTML(data) {
       function handleEdit(id,u){setData(d=>updateNode(d,id,u));}
       function handleDelete(id){setData(d=>deleteNode(d,id));}
       function handleAddChild(pid,child){setData(d=>addChild(d,pid,child));}
+      function handleMove(id,dir){setData(d=>moveChild(d,id,dir));}
       const leaves=useMemo(()=>collectLeaves(data),[data]);
       const owners=useMemo(()=>[...getAllOwners(data)].sort(),[data]);
       const counts=useMemo(()=>{const c={"Completed":0,"In Progress":0,"Not Started":0};leaves.forEach(l=>{if(c[l.status]!==undefined)c[l.status]++;});return c;},[leaves]);
@@ -299,7 +444,7 @@ function buildExportHTML(data) {
             <select style={sS2} value={filters.buildType} onChange={e=>setFilters(f=>({...f,buildType:e.target.value}))}><option value="">All Build Types</option>{Object.keys(BUILD_CONFIG).filter(b=>b!=="—").map(b=><option key={b}>{b}</option>)}</select>
             {(filters.status||filters.owner||filters.buildType)&&(<button onClick={()=>setFilters({status:"",owner:"",buildType:""})} style={{background:"none",border:"1px solid #3C405B",borderRadius:7,padding:"6px 12px",color:"#D8D7EE",fontSize:12,cursor:"pointer"}}>✕ Clear</button>)}
           </div>
-          <NodeCard node={data} depth={0} filters={filters} onEdit={handleEdit} onDelete={handleDelete} onAddChild={handleAddChild} isRoot={true}/>
+          <NodeCard node={data} depth={0} filters={filters} onEdit={handleEdit} onDelete={handleDelete} onAddChild={handleAddChild} onMove={handleMove} siblingIndex={0} siblingCount={1} isRoot={true}/>
           <div style={{marginTop:22,display:"flex",gap:16,flexWrap:"wrap",fontSize:11,color:BRAND.coolGray,justifyContent:"center"}}>
             {Object.entries(BUILD_CONFIG).filter(([k])=>k!=="—").map(([k,v])=>(<span key={k} style={{color:v.color}}>{v.icon} {k}</span>))}
           </div>
@@ -321,6 +466,7 @@ export default function App() {
   function handleEdit(id, u) { setData(d => updateNode(d, id, u)); }
   function handleDelete(id) { setData(d => deleteNode(d, id)); }
   function handleAddChild(pid, child) { setData(d => addChild(d, pid, child)); }
+  function handleMove(id, dir) { setData(d => moveChild(d, id, dir)); }
 
   const leaves = useMemo(() => collectLeaves(data), [data]);
   const owners = useMemo(() => [...getAllOwners(data)].sort(), [data]);
@@ -331,7 +477,7 @@ export default function App() {
   }, [leaves]);
 
   function handleExport() {
-    const html = buildExportHTML(data);
+    const html = buildExportHTML(data, EXTRA_FIELDS);
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -427,7 +573,7 @@ export default function App() {
           )}
         </div>
 
-        <NodeCard node={data} depth={0} filters={filters} onEdit={handleEdit} onDelete={handleDelete} onAddChild={handleAddChild} isRoot={true} />
+        <NodeCard node={data} depth={0} filters={filters} onEdit={handleEdit} onDelete={handleDelete} onAddChild={handleAddChild} onMove={handleMove} siblingIndex={0} siblingCount={1} isRoot={true} />
 
         <div style={{ marginTop: 22, display: "flex", gap: 16, flexWrap: "wrap", fontSize: 11, color: BRAND.coolGray, justifyContent: "center" }}>
           {Object.entries(BUILD_CONFIG).filter(([k]) => k !== "—").map(([k, v]) => (
