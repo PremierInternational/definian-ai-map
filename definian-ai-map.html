@@ -3,196 +3,500 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Definian – AI Integration Map</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <title>Data Platform · AI Integration Map</title>
   <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{background:#02072D;font-family:'Roboto',sans-serif;min-height:100vh;padding:28px;}
-    select,input,button{font-family:'Roboto',sans-serif;}
-    select option{background:#0a1240;color:#fff;}
-  </style>
+  <style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#02072D;font-family:'Roboto',sans-serif;min-height:100vh;padding:28px;}select,input,button{font-family:'Roboto',sans-serif;}select option{background:#0a1240;color:#fff;}</style>
 </head>
 <body>
   <div id="root"></div>
-
-  <script>
-    window.__INITIAL_DATA__ = {
-      "id": "root",
-      "name": "Data Platform",
-      "description": "Central hub for all AI integrations",
+  <script>window.__INITIAL_DATA__={
+  "id": "root",
+  "name": "Data Platform",
+  "description": "Central hub for all AI integrations",
+  "status": "In Progress",
+  "owner": "Platform Team",
+  "nodeType": "Application",
+  "model": "—",
+  "buildType": "—",
+  "aiType": "—",
+  "trainingRequired": "—",
+  "children": [
+    {
+      "id": "client_portal",
+      "name": "Client Portal",
+      "description": "Customer-facing portal for data management operations",
       "status": "In Progress",
-      "owner": "Platform Team",
-      "model": "\u2014",
-      "buildType": "\u2014",
-      "aiType": "\u2014",
-      "trainingRequired": "\u2014",
+      "owner": "",
+      "nodeType": "Application",
+      "model": "—",
+      "buildType": "—",
+      "aiType": "—",
+      "trainingRequired": "—",
       "children": [
         {
-          "id": "ingestion",
-          "name": "Data Ingestion",
-          "description": "Agents managing data pipelines and ETL workflows",
+          "id": "data_mapping",
+          "name": "Data Mapping",
+          "description": "Maps and transforms data fields between source and target schemas",
           "status": "In Progress",
-          "owner": "Data Eng",
-          "model": "\u2014",
-          "buildType": "\u2014",
-          "aiType": "\u2014",
-          "trainingRequired": "\u2014",
+          "owner": "",
+          "nodeType": "Feature",
+          "model": "—",
+          "buildType": "—",
+          "aiType": "—",
+          "trainingRequired": "—",
           "children": [
             {
-              "id": "schema",
-              "name": "Schema Detector",
-              "description": "Automatically detects and maps incoming data schemas",
-              "status": "Completed",
-              "owner": "Alice",
-              "model": "GPT-4o",
-              "buildType": "Web LLM API",
-              "aiType": "Gen AI",
-              "trainingRequired": "No",
-              "children": []
-            },
-            {
-              "id": "cleaner",
-              "name": "Data Cleaner",
-              "description": "Identifies and resolves data quality issues in real-time",
-              "status": "In Progress",
-              "owner": "Bob",
-              "model": "Claude Sonnet",
-              "buildType": "Claude Project",
-              "aiType": "Agentic AI",
-              "trainingRequired": "Yes \u2013 Context",
-              "children": []
-            }
-          ]
-        },
-        {
-          "id": "analytics",
-          "name": "Analytics",
-          "description": "AI-powered analytics and insight generation",
-          "status": "In Progress",
-          "owner": "Analytics Team",
-          "model": "\u2014",
-          "buildType": "\u2014",
-          "aiType": "\u2014",
-          "trainingRequired": "\u2014",
-          "children": [
-            {
-              "id": "nlq",
-              "name": "NL Query Agent",
-              "description": "Translates natural language questions into SQL queries",
-              "status": "Completed",
-              "owner": "Carol",
-              "model": "Claude Opus",
-              "buildType": "Claude Project",
-              "aiType": "Gen AI",
-              "trainingRequired": "Yes \u2013 Context",
-              "children": []
-            },
-            {
-              "id": "anomaly",
-              "name": "Anomaly Detector",
-              "description": "Flags statistical anomalies in streaming data",
-              "status": "In Progress",
-              "owner": "Dave",
-              "model": "Llama 3",
+              "name": "Query Assistant (Talk to Your Data)",
+              "description": "Answers natural language questions about data mapping data",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
               "buildType": "Local LLM API",
-              "aiType": "ML",
-              "trainingRequired": "Yes \u2013 Training",
-              "children": []
-            },
-            {
-              "id": "forecast",
-              "name": "Forecasting Agent",
-              "description": "Generates predictive models for KPI forecasting",
-              "status": "Not Started",
-              "owner": "Eve",
-              "model": "GPT-4o",
-              "buildType": "Web LLM API",
-              "aiType": "ML",
-              "trainingRequired": "Yes \u2013 Training",
-              "children": []
-            }
-          ]
-        },
-        {
-          "id": "governance",
-          "name": "Governance",
-          "description": "Data quality, compliance, and lineage agents",
-          "status": "Not Started",
-          "owner": "Governance Team",
-          "model": "\u2014",
-          "buildType": "\u2014",
-          "aiType": "\u2014",
-          "trainingRequired": "\u2014",
-          "children": [
-            {
-              "id": "pii",
-              "name": "PII Redactor",
-              "description": "Scans and redacts personally identifiable information",
-              "status": "Not Started",
-              "owner": "Frank",
-              "model": "Claude Haiku",
-              "buildType": "Claude Project",
               "aiType": "NLP",
-              "trainingRequired": "No",
-              "children": []
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_215"
             },
             {
-              "id": "lineage",
-              "name": "Lineage Tracer",
-              "description": "Tracks data lineage across the entire platform",
+              "name": "Auto Assign",
+              "description": "Assigns mapping review or enhancements to users",
               "status": "Not Started",
-              "owner": "Grace",
-              "model": "Mistral",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
               "buildType": "Local LLM API",
               "aiType": "Rule-Based",
-              "trainingRequired": "No",
-              "children": []
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_216"
+            },
+            {
+              "name": "Recommend Assistant",
+              "description": "Recommend mapping rules to apply",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Agentic AI",
+              "trainingRequired": "Yes – Training",
+              "children": [],
+              "id": "node_217"
+            },
+            {
+              "name": "Validate Assistant",
+              "description": "Looks for inconsistencies in the mapping and report potential issues",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Agentic AI",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_218"
+            }
+          ]
+        },
+        {
+          "id": "deduplication",
+          "name": "Deduplication",
+          "description": "Identifies and removes duplicate records across datasets",
+          "status": "In Progress",
+          "owner": "",
+          "nodeType": "Feature",
+          "model": "—",
+          "buildType": "—",
+          "aiType": "—",
+          "trainingRequired": "—",
+          "children": [
+            {
+              "name": "Match Criteria",
+              "description": "Recommends Match Criteria weights based on user response",
+              "status": "In Progress",
+              "owner": "Jatin Bhoir",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "ML",
+              "trainingRequired": "Yes – Training",
+              "children": [],
+              "id": "node_101"
+            },
+            {
+              "name": "Query Assistant (Talk to Your Data)",
+              "description": "Answers natural language questions about deduplication data",
+              "status": "In Progress",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "TBD",
+              "buildType": "Local LLM API",
+              "aiType": "NLP",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_200"
+            },
+            {
+              "name": "Auto Assign",
+              "description": "Assigns deduplication entities to users",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Rule-Based",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_201"
+            },
+            {
+              "name": "Match and Merge Assistant",
+              "description": "Automatically grades matches and merges records",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Agentic AI",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_202"
+            }
+          ]
+        },
+        {
+          "id": "data_validation",
+          "name": "Data Validation",
+          "description": "Validates data quality and conformance to business rules",
+          "status": "Not Started",
+          "owner": "",
+          "nodeType": "Feature",
+          "model": "—",
+          "buildType": "—",
+          "aiType": "—",
+          "trainingRequired": "—",
+          "children": [
+            {
+              "name": "Legacy MCP Server",
+              "description": "Connects to legacy systems and pulls data from relevant tables",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "Integration",
+              "model": "",
+              "buildType": "—",
+              "aiType": "—",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_203"
+            },
+            {
+              "name": "Target MCP Server",
+              "description": "Connects to target systems and pulls data from relevant tables",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "Integration",
+              "model": "",
+              "buildType": "—",
+              "aiType": "—",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_204"
+            },
+            {
+              "name": "Query Assistant (Talk to Your Data)",
+              "description": "Answers natural language questions about legacy or target data",
+              "status": "In Progress",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "NLP",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_205"
+            },
+            {
+              "name": "Validate Assistant",
+              "description": "Automatically validates data based on input steps",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Agentic AI",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_206"
+            },
+            {
+              "name": "Auto Assign",
+              "description": "Assigns validation activities to users",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Rule-Based",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_207"
+            },
+            {
+              "name": "Test Case Assistant",
+              "description": "Creates Validation Test Cases",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Gen AI",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_208"
+            }
+          ]
+        },
+        {
+          "id": "error_mgmt",
+          "name": "Error Management",
+          "description": "Tracks, categorizes, and resolves data processing errors",
+          "status": "In Progress",
+          "owner": "",
+          "nodeType": "Feature",
+          "model": "—",
+          "buildType": "—",
+          "aiType": "—",
+          "trainingRequired": "—",
+          "children": [
+            {
+              "name": "Auto Assign",
+              "description": "Assigns errors to users",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Rule-Based",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_209"
+            },
+            {
+              "name": "Query Assistant (Talk to Your Data)",
+              "description": "Answers natural language questions about data processing errors",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "NLP",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_210"
+            },
+            {
+              "name": "Resolution Assistant",
+              "description": "Recommends resolutions for errors",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Gen AI",
+              "trainingRequired": "Yes – Training",
+              "children": [],
+              "id": "node_211"
+            }
+          ]
+        },
+        {
+          "id": "compare_recon",
+          "name": "Compare/Recon",
+          "description": "Compares and reconciles data between source and target systems",
+          "status": "In Progress",
+          "owner": "",
+          "nodeType": "Feature",
+          "model": "—",
+          "buildType": "—",
+          "aiType": "—",
+          "trainingRequired": "—",
+          "children": [
+            {
+              "name": "Query Assistant (Talk to Your Data)",
+              "description": "Answers natural language questions about comparison/recon data",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "NLP",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_212"
+            },
+            {
+              "name": "Auto Assign",
+              "description": "Assign Comparison/Recon Review to Users",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Rule-Based",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_213"
+            },
+            {
+              "name": "Compare/Recon Review Assistant",
+              "description": "Reviews Comparison/Recon results and spotlights critical issues",
+              "status": "Not Started",
+              "owner": "",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Agentic AI",
+              "trainingRequired": "—",
+              "children": [],
+              "id": "node_214"
             }
           ]
         }
       ]
-    };
-
-    window.__EXTRA_FIELDS__ = [
-      {
-        "key": "aiType",
-        "label": "AI Type",
-        "type": "select",
-        "options": ["\u2014", "Gen AI", "Agentic AI", "ML", "NLP", "Computer Vision", "Rule-Based"],
-        "icon": "\ud83e\udde0",
-        "defaultValue": "\u2014"
-      },
-      {
-        "key": "trainingRequired",
-        "label": "Training/Context Req.",
-        "type": "select",
-        "options": ["\u2014", "Yes \u2013 Training", "Yes \u2013 Context", "No"],
-        "icon": "\ud83c\udf93",
-        "defaultValue": "\u2014"
-      }
-    ];
-  </script>
-
+    },
+    {
+      "id": "exec_platform",
+      "name": "Execution Platform",
+      "description": "Core platform for running and orchestrating data workloads",
+      "status": "In Progress",
+      "owner": "",
+      "nodeType": "Application",
+      "model": "—",
+      "buildType": "—",
+      "aiType": "—",
+      "trainingRequired": "—",
+      "children": [
+        {
+          "id": "codeforge",
+          "name": "CodeForge",
+          "description": "Code generation and transformation engine",
+          "status": "In Progress",
+          "owner": "",
+          "nodeType": "Application",
+          "model": "—",
+          "buildType": "—",
+          "aiType": "—",
+          "trainingRequired": "—",
+          "children": [
+            {
+              "name": "AI Code Assistant",
+              "description": "Writes Applaud Code",
+              "status": "In Progress",
+              "owner": "Dan McCarthy",
+              "nodeType": "AI Agent",
+              "model": "Qwen2.5-Coder-1.5B-Instruct",
+              "buildType": "Local LLM API",
+              "aiType": "Gen AI",
+              "trainingRequired": "Yes – Training",
+              "children": [],
+              "id": "node_100"
+            }
+          ]
+        },
+        {
+          "id": "mapmaestro",
+          "name": "MapMaestro",
+          "description": "Visual data mapping and orchestration application",
+          "status": "In Progress",
+          "owner": "",
+          "nodeType": "Application",
+          "model": "—",
+          "buildType": "—",
+          "aiType": "—",
+          "trainingRequired": "—",
+          "children": [
+            {
+              "name": "PII Detector",
+              "description": "Identifies fields that could store PII",
+              "status": "In Progress",
+              "owner": "Dhairya Gandhi",
+              "nodeType": "AI Agent",
+              "model": "",
+              "buildType": "Local LLM API",
+              "aiType": "Gen AI",
+              "trainingRequired": "Yes – Training",
+              "children": [],
+              "id": "node_101"
+            },
+            {
+              "name": "Mapping Recommendation",
+              "description": "Fills in gaps in mapping specifications",
+              "status": "Not Started",
+              "owner": "TBD",
+              "nodeType": "AI Agent",
+              "model": "TBD",
+              "buildType": "—",
+              "aiType": "Gen AI",
+              "trainingRequired": "Yes – Context",
+              "children": [],
+              "id": "node_102"
+            }
+          ]
+        },
+        {
+          "id": "applaud",
+          "name": "Applaud",
+          "description": "Workflow approval and audit management application",
+          "status": "In Progress",
+          "owner": "",
+          "nodeType": "Application",
+          "model": "—",
+          "buildType": "—",
+          "aiType": "—",
+          "trainingRequired": "—",
+          "children": [
+            {
+              "name": "AI Code Assistant",
+              "description": "Writes Applaud Code",
+              "status": "Not Started",
+              "owner": "Dan McCarthy",
+              "nodeType": "AI Agent",
+              "model": "Qwen2.5-Coder-1.5B-Instruct",
+              "buildType": "Local LLM API",
+              "aiType": "Gen AI",
+              "trainingRequired": "Yes – Training",
+              "children": [],
+              "id": "node_100"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};</script>
+  <script>window.__EXTRA_FIELDS__=[{"key":"aiType","label":"AI Type","type":"select","options":["—","Gen AI","Agentic AI","ML","NLP","Computer Vision","Rule-Based"],"icon":"🧠","defaultValue":"—"},{"key":"trainingRequired","label":"Training/Context Req.","type":"select","options":["—","Yes – Training","Yes – Context","No"],"icon":"🎓","defaultValue":"—"}];</script>
+  <script>window.__NODE_TYPE_CONFIG__={"Application":{"icon":"🏗️","color":"#4a90d9"},"Feature":{"icon":"⚙️","color":"#a78bfa"},"Module":{"icon":"📦","color":"#f59e0b"},"Integration":{"icon":"🔗","color":"#e879a0"},"AI Agent":{"icon":"🤖","color":"#00AB63"}};</script>
   <script type="text/babel">
     const{useState,useMemo}=React;
     const BRAND={blue:"#0D2C71",green:"#00AB63",midnight:"#02072D",darkGray:"#3C405B",coolGray:"#D8D7EE",white:"#FFFFFF",blueLight:"#1a3d8f",greenDark:"#008a4f",midnightLight:"#0a1240"};
     const STATUS_CONFIG={"Completed":{bg:"#003d24",text:"#00AB63",dot:"#00AB63",border:"#00AB63"},"In Progress":{bg:"#2a1e00",text:"#f5c842",dot:"#f5c842",border:"#f5c842"},"Not Started":{bg:"#1e2035",text:"#D8D7EE",dot:"#6b7280",border:"#3C405B"}};
     const BUILD_CONFIG={"Local LLM API":{icon:"🖥️",color:"#7c6af5"},"Claude Project":{icon:"🔷",color:"#00AB63"},"Web LLM API":{icon:"🌐",color:"#4a90d9"},"—":{icon:"",color:"transparent"}};
+    const NODE_TYPE_CONFIG=window.__NODE_TYPE_CONFIG__;
     const EXTRA_FIELDS=window.__EXTRA_FIELDS__;
-    let nextId=100;
+    let nextId=200;
     const makeId=()=>`node_${nextId++}`;
-    const BLANK={name:"",description:"",status:"Not Started",owner:"",model:"",buildType:"—",...Object.fromEntries(EXTRA_FIELDS.map(f=>[f.key,f.defaultValue])),children:[]};
+    const BLANK={name:"",description:"",status:"Not Started",owner:"",nodeType:"AI Agent",model:"",buildType:"—",...Object.fromEntries(EXTRA_FIELDS.map(f=>[f.key,f.defaultValue])),children:[]};
 
     function updateNode(t,id,u){if(t.id===id)return{...t,...u};return{...t,children:t.children.map(c=>updateNode(c,id,u))};}
     function deleteNode(t,id){return{...t,children:t.children.filter(c=>c.id!==id).map(c=>deleteNode(c,id))};}
     function addChild(t,pid,child){if(t.id===pid)return{...t,children:[...t.children,child]};return{...t,children:t.children.map(c=>addChild(c,pid,child))};}
     function moveChild(t,id,dir){const i=t.children.findIndex(c=>c.id===id);if(i!==-1){const ni=dir==="up"?i-1:i+1;if(ni<0||ni>=t.children.length)return t;const ch=[...t.children];[ch[i],ch[ni]]=[ch[ni],ch[i]];return{...t,children:ch};}return{...t,children:t.children.map(c=>moveChild(c,id,dir))};}
-    function collectLeaves(n,a=[]){if(!n.children||n.children.length===0){a.push(n);return a;}n.children.forEach(c=>collectLeaves(c,a));return a;}
-    function getAllOwners(n,s=new Set()){if(n.owner&&n.owner!=="—")s.add(n.owner);n.children?.forEach(c=>getAllOwners(c,s));return s;}
+    function getAllNodes(n,a=[]){a.push(n);n.children?.forEach(c=>getAllNodes(c,a));return a;}
+    function getAllOwners(n,s=new Set()){if(n.owner&&n.owner!=="\u2014")s.add(n.owner);n.children?.forEach(c=>getAllOwners(c,s));return s;}
 
     const iS={background:"#0a1240",border:"1px solid #3C405B",borderRadius:6,padding:"5px 9px",fontSize:12,color:"#FFFFFF",outline:"none",width:160};
     const sS={...iS,width:"auto",minWidth:140,cursor:"pointer"};
@@ -241,17 +545,17 @@
       const[newNode,setNewNode]=useState({...BLANK});
       const hasChildren=node.children?.length>0;
       const sc=STATUS_CONFIG[node.status]||STATUS_CONFIG["Not Started"];
-      const bc=BUILD_CONFIG[node.buildType]||BUILD_CONFIG["—"];
+      const bc=BUILD_CONFIG[node.buildType]||BUILD_CONFIG["\u2014"];
+      const ntc=NODE_TYPE_CONFIG[node.nodeType]||NODE_TYPE_CONFIG["AI Agent"];
       const depthAccent=depth===0?BRAND.green:depth===1?BRAND.blue:BRAND.darkGray;
       const headerBg=depth===0?BRAND.midnightLight:depth===1?"#071040":"#0d1535";
+      const editIsAgent=(form.nodeType||"AI Agent")==="AI Agent";
+      const newIsAgent=(newNode.nodeType||"AI Agent")==="AI Agent";
 
       function npf(n){
-        if(!n.children||n.children.length===0){
-          return(!filters.status||n.status===filters.status)
-            &&(!filters.owner||n.owner===filters.owner)
-            &&(!filters.buildType||n.buildType===filters.buildType);
-        }
-        return n.children.some(c=>npf(c));
+        const sp=(!filters.status||n.status===filters.status)&&(!filters.owner||n.owner===filters.owner)&&(!filters.buildType||n.buildType===filters.buildType)&&(!filters.nodeType||(n.nodeType||"AI Agent")===filters.nodeType);
+        if(!n.children||n.children.length===0)return sp;
+        return sp||n.children.some(c=>npf(c));
       }
       if(!npf(node))return null;
 
@@ -273,7 +577,11 @@
             <div style={{display:"flex",alignItems:"center",gap:8,padding:"11px 14px",background:headerBg,cursor:hasChildren?"pointer":"default",userSelect:"none"}}
               onClick={()=>hasChildren&&setExpanded(e=>!e)}>
               {hasChildren&&<span style={{fontSize:13,color:depthAccent,minWidth:14}}>{expanded?"▾":"▸"}</span>}
+              <span style={{fontSize:14,lineHeight:1}}>{ntc.icon}</span>
               <span style={{fontFamily:"'Titillium Web',sans-serif",fontWeight:700,fontSize:depth===0?17:14,color:BRAND.white,flex:1}}>{node.name}</span>
+              <span style={{color:ntc.color,border:`1px solid ${ntc.color}44`,borderRadius:99,padding:"2px 8px",fontSize:10,fontWeight:700,whiteSpace:"nowrap",background:`${ntc.color}12`}}>
+                {node.nodeType||"AI Agent"}
+              </span>
               <span style={{background:sc.bg,color:sc.text,border:`1px solid ${sc.border}44`,borderRadius:99,padding:"2px 10px",fontSize:11,fontWeight:600,display:"inline-flex",alignItems:"center",gap:4,whiteSpace:"nowrap"}}>
                 <span style={{width:7,height:7,borderRadius:"50%",background:sc.dot}}/>{node.status}
               </span>
@@ -295,9 +603,9 @@
               <div style={{padding:"8px 14px 10px",fontSize:12,color:BRAND.coolGray,display:"flex",flexWrap:"wrap",gap:"5px 18px"}}>
                 <span style={{color:"#a0a9c8"}}>📝 {node.description}</span>
                 <span>👤 <b style={{color:BRAND.white}}>{node.owner}</b></span>
-                {node.model!=="—"&&node.model&&<span>🤖 <b style={{color:BRAND.white}}>{node.model}</b></span>}
-                {node.buildType!=="—"&&node.buildType&&<span style={{color:bc.color}}>{bc.icon} <b>{node.buildType}</b></span>}
-                {EXTRA_FIELDS.map(f=>{const val=node[f.key];if(!val||val==="—")return null;return<span key={f.key}>{f.icon} <b style={{color:BRAND.white}}>{val}</b></span>;})}
+                {node.model!=="\u2014"&&node.model&&<span>🤖 <b style={{color:BRAND.white}}>{node.model}</b></span>}
+                {node.buildType!=="\u2014"&&node.buildType&&<span style={{color:bc.color}}>{bc.icon} <b>{node.buildType}</b></span>}
+                {EXTRA_FIELDS.map(f=>{const val=node[f.key];if(!val||val==="\u2014")return null;return<span key={f.key}>{f.icon} <b style={{color:BRAND.white}}>{val}</b></span>;})}
               </div>
             )}
 
@@ -306,30 +614,39 @@
               <div style={{padding:"12px 14px",background:"#040d2a",display:"flex",flexWrap:"wrap",gap:10,borderTop:`1px solid ${BRAND.darkGray}`}}
                 onClick={e=>e.stopPropagation()}>
                 <Field label="Name"><input style={iS} value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))}/></Field>
+                <Field label="Node Type">
+                  <select style={sS} value={form.nodeType||"AI Agent"} onChange={e=>setForm(f=>({...f,nodeType:e.target.value}))}>
+                    {Object.keys(NODE_TYPE_CONFIG).map(t=><option key={t}>{t}</option>)}
+                  </select>
+                </Field>
                 <Field label="Description"><input style={{...iS,width:220}} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/></Field>
                 <Field label="Owner"><input style={iS} value={form.owner} onChange={e=>setForm(f=>({...f,owner:e.target.value}))}/></Field>
-                <Field label="Model"><input style={iS} value={form.model} onChange={e=>setForm(f=>({...f,model:e.target.value}))}/></Field>
                 <Field label="Status">
                   <select style={sS} value={form.status} onChange={e=>setForm(f=>({...f,status:e.target.value}))}>
                     {Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}
                   </select>
                 </Field>
-                <Field label="Build Type">
-                  <select style={sS} value={form.buildType} onChange={e=>setForm(f=>({...f,buildType:e.target.value}))}>
-                    {Object.keys(BUILD_CONFIG).map(s=><option key={s}>{s}</option>)}
-                  </select>
-                </Field>
-                {EXTRA_FIELDS.map(f=>(
-                  <Field key={f.key} label={f.label}>
-                    {f.type==="select"?(
-                      <select style={sS} value={form[f.key]??f.defaultValue} onChange={e=>setForm(ff=>({...ff,[f.key]:e.target.value}))}>
-                        {f.options.map(o=><option key={o}>{o}</option>)}
+                {editIsAgent&&(
+                  <>
+                    <Field label="Model"><input style={iS} value={form.model} onChange={e=>setForm(f=>({...f,model:e.target.value}))} placeholder="e.g. GPT-4o"/></Field>
+                    <Field label="Build Type">
+                      <select style={sS} value={form.buildType} onChange={e=>setForm(f=>({...f,buildType:e.target.value}))}>
+                        {Object.keys(BUILD_CONFIG).map(s=><option key={s}>{s}</option>)}
                       </select>
-                    ):(
-                      <input style={iS} value={form[f.key]??""} onChange={e=>setForm(ff=>({...ff,[f.key]:e.target.value}))}/>
-                    )}
-                  </Field>
-                ))}
+                    </Field>
+                    {EXTRA_FIELDS.map(f=>(
+                      <Field key={f.key} label={f.label}>
+                        {f.type==="select"?(
+                          <select style={sS} value={form[f.key]??f.defaultValue} onChange={e=>setForm(ff=>({...ff,[f.key]:e.target.value}))}>
+                            {f.options.map(o=><option key={o}>{o}</option>)}
+                          </select>
+                        ):(
+                          <input style={iS} value={form[f.key]??""} onChange={e=>setForm(ff=>({...ff,[f.key]:e.target.value}))}/>
+                        )}
+                      </Field>
+                    ))}
+                  </>
+                )}
                 <div style={{display:"flex",alignItems:"flex-end",gap:6}}>
                   <Btn onClick={saveEdit} primary>Save</Btn>
                   <Btn onClick={()=>setEditing(false)}>Cancel</Btn>
@@ -344,31 +661,40 @@
                 <div style={{width:"100%",fontSize:11,color:BRAND.green,fontFamily:"'Titillium Web',sans-serif",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:2}}>
                   ＋ Add child to "{node.name}"
                 </div>
-                <Field label="Name *"><input style={iS} value={newNode.name} onChange={e=>setNewNode(f=>({...f,name:e.target.value}))} placeholder="Agent name"/></Field>
+                <Field label="Name *"><input style={iS} value={newNode.name} onChange={e=>setNewNode(f=>({...f,name:e.target.value}))} placeholder="Node name"/></Field>
+                <Field label="Node Type">
+                  <select style={sS} value={newNode.nodeType||"AI Agent"} onChange={e=>setNewNode(f=>({...f,nodeType:e.target.value}))}>
+                    {Object.keys(NODE_TYPE_CONFIG).map(t=><option key={t}>{t}</option>)}
+                  </select>
+                </Field>
                 <Field label="Description"><input style={{...iS,width:220}} value={newNode.description} onChange={e=>setNewNode(f=>({...f,description:e.target.value}))} placeholder="What does it do?"/></Field>
                 <Field label="Owner"><input style={iS} value={newNode.owner} onChange={e=>setNewNode(f=>({...f,owner:e.target.value}))} placeholder="Name or team"/></Field>
-                <Field label="Model"><input style={iS} value={newNode.model} onChange={e=>setNewNode(f=>({...f,model:e.target.value}))} placeholder="e.g. GPT-4o"/></Field>
                 <Field label="Status">
                   <select style={sS} value={newNode.status} onChange={e=>setNewNode(f=>({...f,status:e.target.value}))}>
                     {Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}
                   </select>
                 </Field>
-                <Field label="Build Type">
-                  <select style={sS} value={newNode.buildType} onChange={e=>setNewNode(f=>({...f,buildType:e.target.value}))}>
-                    {Object.keys(BUILD_CONFIG).map(s=><option key={s}>{s}</option>)}
-                  </select>
-                </Field>
-                {EXTRA_FIELDS.map(f=>(
-                  <Field key={f.key} label={f.label}>
-                    {f.type==="select"?(
-                      <select style={sS} value={newNode[f.key]??f.defaultValue} onChange={e=>setNewNode(nn=>({...nn,[f.key]:e.target.value}))}>
-                        {f.options.map(o=><option key={o}>{o}</option>)}
+                {newIsAgent&&(
+                  <>
+                    <Field label="Model"><input style={iS} value={newNode.model} onChange={e=>setNewNode(f=>({...f,model:e.target.value}))} placeholder="e.g. GPT-4o"/></Field>
+                    <Field label="Build Type">
+                      <select style={sS} value={newNode.buildType} onChange={e=>setNewNode(f=>({...f,buildType:e.target.value}))}>
+                        {Object.keys(BUILD_CONFIG).map(s=><option key={s}>{s}</option>)}
                       </select>
-                    ):(
-                      <input style={iS} value={newNode[f.key]??""} onChange={e=>setNewNode(nn=>({...nn,[f.key]:e.target.value}))}/>
-                    )}
-                  </Field>
-                ))}
+                    </Field>
+                    {EXTRA_FIELDS.map(f=>(
+                      <Field key={f.key} label={f.label}>
+                        {f.type==="select"?(
+                          <select style={sS} value={newNode[f.key]??f.defaultValue} onChange={e=>setNewNode(nn=>({...nn,[f.key]:e.target.value}))}>
+                            {f.options.map(o=><option key={o}>{o}</option>)}
+                          </select>
+                        ):(
+                          <input style={iS} value={newNode[f.key]??""} onChange={e=>setNewNode(nn=>({...nn,[f.key]:e.target.value}))}/>
+                        )}
+                      </Field>
+                    ))}
+                  </>
+                )}
                 <div style={{display:"flex",alignItems:"flex-end",gap:6}}>
                   <Btn onClick={saveNew} primary>Add</Btn>
                   <Btn onClick={()=>setAdding(false)}>Cancel</Btn>
@@ -391,29 +717,84 @@
       );
     }
 
+    function EmbedModal({onClose}){
+      const[copied,setCopied]=useState(false);
+      const url=window.location.href;
+      const iframeCode=`<iframe src="${url}" width="100%" height="900" frameborder="0" style="border:none;min-height:900px;"></iframe>`;
+      function copyCode(){
+        navigator.clipboard.writeText(iframeCode).then(()=>{
+          setCopied(true);setTimeout(()=>setCopied(false),2500);
+        });
+      }
+      return(
+        <div style={{position:"fixed",top:0,left:0,width:"100%",height:"100%",background:"rgba(2,7,45,0.85)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center",backdropFilter:"blur(4px)"}}
+          onClick={onClose}>
+          <div style={{background:"#0a1240",border:"1.5px solid #00AB63",borderRadius:14,padding:28,maxWidth:640,width:"90%",boxShadow:"0 8px 48px rgba(0,0,0,0.7)"}}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:18}}>
+              <div style={{fontFamily:"'Titillium Web',sans-serif",fontWeight:700,fontSize:20,color:"#FFFFFF"}}>
+                ⧉ SharePoint Embed Code
+              </div>
+              <button onClick={onClose} style={{background:"none",border:"1px solid #3C405B",borderRadius:6,padding:"4px 10px",color:"#D8D7EE",cursor:"pointer",fontSize:14}}>✕</button>
+            </div>
+            <p style={{fontSize:12,color:"#D8D7EE",marginBottom:14,lineHeight:1.6}}>
+              To embed this map in SharePoint, first upload the exported HTML file to a SharePoint document library or site assets, then copy the iframe code below and paste it into a <b style={{color:"#00AB63"}}>Embed</b> web part on your SharePoint page.
+            </p>
+            <div style={{fontSize:10,color:"#00AB63",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>Current page URL</div>
+            <div style={{background:"#040d2a",border:"1px solid #3C405B",borderRadius:8,padding:"10px 14px",marginBottom:16,fontSize:11,color:"#a0a9c8",wordBreak:"break-all",fontFamily:"monospace"}}>
+              {url}
+            </div>
+            <div style={{fontSize:10,color:"#00AB63",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:6}}>iframe embed code</div>
+            <div style={{background:"#040d2a",border:"1px solid #3C405B",borderRadius:8,padding:"12px 14px",marginBottom:16,fontFamily:"monospace",fontSize:11,color:"#D8D7EE",wordBreak:"break-all",lineHeight:1.6}}>
+              {iframeCode}
+            </div>
+            <div style={{display:"flex",gap:10,justifyContent:"flex-end"}}>
+              <button onClick={copyCode}
+                style={{background:copied?"#00AB63":"transparent",border:`1.5px solid #00AB63`,color:copied?"#02072D":"#00AB63",borderRadius:8,padding:"8px 20px",fontSize:12,fontWeight:700,cursor:"pointer",transition:"all 0.2s"}}>
+                {copied?"✓ Copied!":"📋 Copy Code"}
+              </button>
+              <button onClick={onClose}
+                style={{background:"#1e2240",border:"1px solid #3C405B",color:"#D8D7EE",borderRadius:8,padding:"8px 20px",fontSize:12,fontWeight:700,cursor:"pointer"}}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     function App(){
       const[data,setData]=useState(window.__INITIAL_DATA__);
-      const[filters,setFilters]=useState({status:"",owner:"",buildType:""});
+      const[filters,setFilters]=useState({status:"",owner:"",buildType:"",nodeType:""});
       const[exported,setExported]=useState(false);
+      const[showEmbed,setShowEmbed]=useState(false);
 
       function handleEdit(id,u){setData(d=>updateNode(d,id,u));}
       function handleDelete(id){setData(d=>deleteNode(d,id));}
       function handleAddChild(pid,child){setData(d=>addChild(d,pid,child));}
       function handleMove(id,dir){setData(d=>moveChild(d,id,dir));}
 
-      const leaves=useMemo(()=>collectLeaves(data),[data]);
+      const allNodes=useMemo(()=>getAllNodes(data),[data]);
       const owners=useMemo(()=>[...getAllOwners(data)].sort(),[data]);
       const counts=useMemo(()=>{
         const c={"Completed":0,"In Progress":0,"Not Started":0};
-        leaves.forEach(l=>{if(c[l.status]!==undefined)c[l.status]++;});
+        allNodes.forEach(n=>{if(c[n.status]!==undefined)c[n.status]++;});
         return c;
-      },[leaves]);
+      },[allNodes]);
+      const typeCounts=useMemo(()=>{
+        const c={};
+        allNodes.forEach(n=>{const t=n.nodeType||"AI Agent";c[t]=(c[t]||0)+1;});
+        return c;
+      },[allNodes]);
+
+      const anyFilter=filters.status||filters.owner||filters.buildType||filters.nodeType;
 
       function handleExport(){
         const json=JSON.stringify(data,null,2);
         const efJson=JSON.stringify(EXTRA_FIELDS);
+        const ntJson=JSON.stringify(NODE_TYPE_CONFIG);
         const scriptSrc=document.querySelector('script[type="text/babel"]').textContent;
-        const html=`<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8"/>\n  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>\n  <title>Definian \u2013 AI Integration Map</title>\n  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"><\/script>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"><\/script>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"><\/script>\n  <style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#02072D;font-family:'Roboto',sans-serif;min-height:100vh;padding:28px;}select,input,button{font-family:'Roboto',sans-serif;}select option{background:#0a1240;color:#fff;}<\/style>\n<\/head>\n<body>\n  <div id="root"><\/div>\n  <script>window.__INITIAL_DATA__=${json};<\/script>\n  <script>window.__EXTRA_FIELDS__=${efJson};<\/script>\n  <script type="text/babel">${scriptSrc}<\/script>\n<\/body>\n<\/html>`;
+        const html=`<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8"/>\n  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>\n  <title>Data Platform \u00b7 AI Integration Map<\/title>\n  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"><\/script>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"><\/script>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"><\/script>\n  <style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#02072D;font-family:'Roboto',sans-serif;min-height:100vh;padding:28px;}select,input,button{font-family:'Roboto',sans-serif;}select option{background:#0a1240;color:#fff;}<\/style>\n<\/head>\n<body>\n  <div id="root"><\/div>\n  <script>window.__INITIAL_DATA__=${json};<\/script>\n  <script>window.__EXTRA_FIELDS__=${efJson};<\/script>\n  <script>window.__NODE_TYPE_CONFIG__=${ntJson};<\/script>\n  <script type="text/babel">${scriptSrc}<\/script>\n<\/body>\n<\/html>`;
         const blob=new Blob([html],{type:"text/html"});
         const url=URL.createObjectURL(blob);
         const a=document.createElement("a");
@@ -426,11 +807,12 @@
 
       return(
         <div style={{fontFamily:"Roboto,sans-serif",background:BRAND.midnight,minHeight:"100vh",padding:28}}>
-          <div style={{maxWidth:860,margin:"0 auto"}}>
+          {showEmbed&&<EmbedModal onClose={()=>setShowEmbed(false)}/>}
+          <div style={{maxWidth:900,margin:"0 auto"}}>
 
             {/* Header */}
-            <div style={{display:"flex",alignItems:"center",gap:18,marginBottom:6}}>
-              <svg width="52" height="58" viewBox="0 0 900 1000" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
+            <div style={{display:"flex",alignItems:"center",gap:20,marginBottom:6}}>
+              <svg width="58" height="64" viewBox="0 0 900 1000" fill="none" xmlns="http://www.w3.org/2000/svg" style={{flexShrink:0}}>
                 <defs><linearGradient id="cg" x1="0" y1="0" x2="900" y2="1000" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#00AB63"/><stop offset="100%" stopColor="#0D2C71"/></linearGradient></defs>
                 <polygon points="450,60 820,260 450,460 80,260" fill="#00AB63"/>
                 <polygon points="80,260 80,680 450,880 450,460" fill="url(#cg)"/>
@@ -451,20 +833,26 @@
                 </g>
               </svg>
               <div style={{flex:1}}>
-                <svg width="190" height="44" viewBox="0 0 760 176" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="302" y="0" width="44" height="44" fill="#00AB63"/>
-                  <rect x="468" y="0" width="44" height="44" fill="#00AB63"/>
-                  <text x="0" y="160" fontFamily="'Titillium Web',sans-serif" fontWeight="700" fontSize="152" fill="#0D2C71" letterSpacing="-2">definian</text>
-                </svg>
-                <div style={{fontSize:12,color:BRAND.coolGray,marginTop:2}}>Data Platform · AI Agents &amp; Assistants Registry</div>
+                <div style={{fontFamily:"'Titillium Web',sans-serif",fontWeight:700,fontSize:38,color:BRAND.white,lineHeight:1.1,letterSpacing:"-0.5px"}}>
+                  Data Platform <span style={{color:BRAND.green}}>·</span> AI Integration Map
+                </div>
               </div>
-              <button onClick={handleExport}
-                style={{background:exported?BRAND.green:"transparent",border:`1.5px solid ${BRAND.green}`,
-                  color:exported?BRAND.midnight:BRAND.green,borderRadius:8,padding:"8px 16px",
-                  fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",
-                  gap:6,transition:"all 0.2s",whiteSpace:"nowrap"}}>
-                {exported?"✓ Downloaded!":"⬇ Export HTML"}
-              </button>
+              <div style={{display:"flex",gap:8,flexShrink:0}}>
+                <button onClick={()=>setShowEmbed(e=>!e)}
+                  style={{background:"transparent",border:`1.5px solid #4a90d9`,
+                    color:"#4a90d9",borderRadius:8,padding:"8px 16px",
+                    fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",
+                    gap:6,transition:"all 0.2s",whiteSpace:"nowrap"}}>
+                  ⧉ Embed Code
+                </button>
+                <button onClick={handleExport}
+                  style={{background:exported?BRAND.green:"transparent",border:`1.5px solid ${BRAND.green}`,
+                    color:exported?BRAND.midnight:BRAND.green,borderRadius:8,padding:"8px 16px",
+                    fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",
+                    gap:6,transition:"all 0.2s",whiteSpace:"nowrap"}}>
+                  {exported?"✓ Downloaded!":"⬇ Export HTML"}
+                </button>
+              </div>
             </div>
 
             {/* Divider */}
@@ -477,10 +865,16 @@
                   <span style={{width:8,height:8,borderRadius:"50%",background:c.dot}}/>{counts[s]} {s}
                 </div>
               ))}
-              <div style={{background:"#0d1a4a",color:BRAND.coolGray,border:"1px solid #0D2C71",borderRadius:8,padding:"5px 14px",fontSize:12,fontWeight:600}}>
-                {leaves.length} Total Agents
-              </div>
+              {Object.entries(NODE_TYPE_CONFIG).map(([t,cfg])=>typeCounts[t]?(
+                <div key={t} style={{background:`${cfg.color}15`,color:cfg.color,border:`1px solid ${cfg.color}44`,borderRadius:8,padding:"5px 14px",fontSize:12,fontWeight:600}}>
+                  {cfg.icon} {typeCounts[t]} {t}{typeCounts[t]!==1?"s":""}
+                </div>
+              ):null)}
               <div style={{flex:1}}/>
+              <select style={selStyle} value={filters.nodeType} onChange={e=>setFilters(f=>({...f,nodeType:e.target.value}))}>
+                <option value="">All Types</option>
+                {Object.keys(NODE_TYPE_CONFIG).map(t=><option key={t}>{t}</option>)}
+              </select>
               <select style={selStyle} value={filters.status} onChange={e=>setFilters(f=>({...f,status:e.target.value}))}>
                 <option value="">All Statuses</option>
                 {Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}
@@ -491,10 +885,10 @@
               </select>
               <select style={selStyle} value={filters.buildType} onChange={e=>setFilters(f=>({...f,buildType:e.target.value}))}>
                 <option value="">All Build Types</option>
-                {Object.keys(BUILD_CONFIG).filter(b=>b!=="—").map(b=><option key={b}>{b}</option>)}
+                {Object.keys(BUILD_CONFIG).filter(b=>b!=="\u2014").map(b=><option key={b}>{b}</option>)}
               </select>
-              {(filters.status||filters.owner||filters.buildType)&&(
-                <button onClick={()=>setFilters({status:"",owner:"",buildType:""})}
+              {anyFilter&&(
+                <button onClick={()=>setFilters({status:"",owner:"",buildType:"",nodeType:""})}
                   style={{background:"none",border:"1px solid #3C405B",borderRadius:7,padding:"6px 12px",color:"#D8D7EE",fontSize:12,cursor:"pointer"}}>
                   ✕ Clear
                 </button>
@@ -503,8 +897,15 @@
 
             <NodeCard node={data} depth={0} filters={filters} onEdit={handleEdit} onDelete={handleDelete} onAddChild={handleAddChild} onMove={handleMove} siblingIndex={0} siblingCount={1} isRoot={true}/>
 
-            <div style={{marginTop:22,display:"flex",gap:16,flexWrap:"wrap",fontSize:11,color:BRAND.coolGray,justifyContent:"center"}}>
-              {Object.entries(BUILD_CONFIG).filter(([k])=>k!=="—").map(([k,v])=>(
+            {/* Legend */}
+            <div style={{marginTop:22,display:"flex",gap:18,flexWrap:"wrap",fontSize:11,color:BRAND.coolGray,justifyContent:"center",borderTop:"1px solid #1e2240",paddingTop:14}}>
+              <span style={{color:"#4a5068",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.08em",fontSize:10}}>Node Types</span>
+              {Object.entries(NODE_TYPE_CONFIG).map(([k,v])=>(
+                <span key={k} style={{color:v.color,fontWeight:600}}>{v.icon} {k}</span>
+              ))}
+              <span style={{color:"#4a5068",margin:"0 4px"}}>·</span>
+              <span style={{color:"#4a5068",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.08em",fontSize:10}}>Build Types</span>
+              {Object.entries(BUILD_CONFIG).filter(([k])=>k!=="\u2014").map(([k,v])=>(
                 <span key={k} style={{color:v.color}}>{v.icon} {k}</span>
               ))}
             </div>
