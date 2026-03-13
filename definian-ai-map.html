@@ -14,7 +14,7 @@
   <div id="root"></div>
   <script>window.__INITIAL_DATA__={
   "id": "root",
-  "name": "Data Platform",
+  "name": "Data Platform test",
   "description": "Central hub for all AI integrations",
   "status": "In Progress",
   "owner": "Platform Team",
@@ -481,7 +481,7 @@
   <script>window.__EXTRA_FIELDS__=[{"key":"aiType","label":"AI Type","type":"select","options":["—","Gen AI","Agentic AI","ML","NLP","Computer Vision","Rule-Based"],"icon":"🧠","defaultValue":"—"},{"key":"trainingRequired","label":"Training/Context Req.","type":"select","options":["—","Yes – Training","Yes – Context","No"],"icon":"🎓","defaultValue":"—"}];</script>
   <script>window.__NODE_TYPE_CONFIG__={"Application":{"icon":"🏗️","color":"#4a90d9"},"Feature":{"icon":"⚙️","color":"#a78bfa"},"Module":{"icon":"📦","color":"#f59e0b"},"Integration":{"icon":"🔗","color":"#e879a0"},"AI Agent":{"icon":"🤖","color":"#00AB63"}};</script>
   <script type="text/babel">
-    const{useState,useMemo}=React;
+    const{useState,useMemo,useEffect}=React;
     const BRAND={blue:"#0D2C71",green:"#00AB63",midnight:"#02072D",darkGray:"#3C405B",coolGray:"#D8D7EE",white:"#FFFFFF",blueLight:"#1a3d8f",greenDark:"#008a4f",midnightLight:"#0a1240"};
     const STATUS_CONFIG={"Completed":{bg:"#003d24",text:"#00AB63",dot:"#00AB63",border:"#00AB63"},"In Progress":{bg:"#2a1e00",text:"#f5c842",dot:"#f5c842",border:"#f5c842"},"Not Started":{bg:"#1e2035",text:"#D8D7EE",dot:"#6b7280",border:"#3C405B"}};
     const BUILD_CONFIG={"Local LLM API":{icon:"🖥️",color:"#7c6af5"},"Claude Project":{icon:"🔷",color:"#00AB63"},"Web LLM API":{icon:"🌐",color:"#4a90d9"},"—":{icon:"",color:"transparent"}};
@@ -764,10 +764,18 @@
     }
 
     function App(){
-      const[data,setData]=useState(window.__INITIAL_DATA__);
+      const[data,setData]=useState(()=>{try{const s=localStorage.getItem('def-ai-map');return s?JSON.parse(s):window.__INITIAL_DATA__;}catch(e){return window.__INITIAL_DATA__;}});
       const[filters,setFilters]=useState({status:"",owner:"",buildType:"",nodeType:""});
       const[exported,setExported]=useState(false);
       const[showEmbed,setShowEmbed]=useState(false);
+      const[pushState,setPushState]=useState("idle");
+      const[pushError,setPushError]=useState("");
+      const[refreshState,setRefreshState]=useState("idle");
+      const[showSettings,setShowSettings]=useState(false);
+      const[pat,setPat]=useState(()=>localStorage.getItem('def-ai-map-pat')||"");
+      const[logs,setLogs]=useState([]);
+      useEffect(()=>{try{localStorage.setItem('def-ai-map',JSON.stringify(data));}catch(e){}},[data]);
+      function addLog(msg,level="info"){const t=new Date().toLocaleTimeString();setLogs(l=>[{t,msg,level},...l].slice(0,50));}
 
       function handleEdit(id,u){setData(d=>updateNode(d,id,u));}
       function handleDelete(id){setData(d=>deleteNode(d,id));}
@@ -789,18 +797,79 @@
 
       const anyFilter=filters.status||filters.owner||filters.buildType||filters.nodeType;
 
-      function handleExport(){
+      function buildHTML(){
         const json=JSON.stringify(data,null,2);
         const efJson=JSON.stringify(EXTRA_FIELDS);
         const ntJson=JSON.stringify(NODE_TYPE_CONFIG);
         const scriptSrc=document.querySelector('script[type="text/babel"]').textContent;
-        const html=`<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8"/>\n  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>\n  <title>Data Platform \u00b7 AI Integration Map<\/title>\n  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"><\/script>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"><\/script>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"><\/script>\n  <style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#02072D;font-family:'Roboto',sans-serif;min-height:100vh;padding:28px;}select,input,button{font-family:'Roboto',sans-serif;}select option{background:#0a1240;color:#fff;}<\/style>\n<\/head>\n<body>\n  <div id="root"><\/div>\n  <script>window.__INITIAL_DATA__=${json};<\/script>\n  <script>window.__EXTRA_FIELDS__=${efJson};<\/script>\n  <script>window.__NODE_TYPE_CONFIG__=${ntJson};<\/script>\n  <script type="text/babel">${scriptSrc}<\/script>\n<\/body>\n<\/html>`;
+        return `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8"/>\n  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>\n  <title>Data Platform \u00b7 AI Integration Map<\/title>\n  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"><\/script>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"><\/script>\n  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"><\/script>\n  <style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#02072D;font-family:'Roboto',sans-serif;min-height:100vh;padding:28px;}select,input,button{font-family:'Roboto',sans-serif;}select option{background:#0a1240;color:#fff;}<\/style>\n<\/head>\n<body>\n  <div id="root"><\/div>\n  <script>window.__INITIAL_DATA__=${json};<\/script>\n  <script>window.__EXTRA_FIELDS__=${efJson};<\/script>\n  <script>window.__NODE_TYPE_CONFIG__=${ntJson};<\/script>\n  <script type="text/babel">${scriptSrc}<\/script>\n<\/body>\n<\/html>`;
+      }
+      function handleExport(){
+        const html=buildHTML();
         const blob=new Blob([html],{type:"text/html"});
         const url=URL.createObjectURL(blob);
         const a=document.createElement("a");
         a.href=url;a.download="definian-ai-map.html";a.click();
         URL.revokeObjectURL(url);
         setExported(true);setTimeout(()=>setExported(false),2500);
+      }
+      async function handlePush(){
+        const token=localStorage.getItem('def-ai-map-pat');
+        if(!token){addLog("No PAT found — open settings to add a token","error");setShowSettings(true);return;}
+        setPushState("pushing");
+        addLog("Push started","info");
+        try{
+          const html=buildHTML();
+          addLog(`Built HTML (${(html.length/1024).toFixed(1)} KB)`,"info");
+          const owner="PremierInternational",repo="definian-ai-map",path="definian-ai-map.html";
+          addLog(`GET /repos/${owner}/${repo}/contents/${path} (fetching current SHA)`,"info");
+          const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{headers:{Authorization:`Bearer ${token}`,Accept:"application/vnd.github+json"}});
+          addLog(`Response: HTTP ${r.status}`,r.ok?"info":"error");
+          if(!r.ok)throw new Error(`GitHub API error ${r.status}`);
+          const{sha}=await r.json();
+          addLog(`Current file SHA: ${sha.slice(0,7)}`,"info");
+          const b64=btoa(unescape(encodeURIComponent(html)));
+          addLog(`PUT /repos/${owner}/${repo}/contents/${path}`,"info");
+          const p=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:"PUT",headers:{Authorization:`Bearer ${token}`,Accept:"application/vnd.github+json","Content-Type":"application/json"},body:JSON.stringify({message:"Update AI Integration Map",content:b64,sha})});
+          addLog(`Response: HTTP ${p.status}`,p.ok?"info":"error");
+          if(!p.ok){const t=await p.text();throw new Error(`Push failed ${p.status}: ${t}`);}
+          const{commit}=await p.json();
+          addLog(`Committed: ${commit.sha.slice(0,7)} — "${commit.message}"`,"success");
+          setPushState("success");setTimeout(()=>setPushState("idle"),3000);
+        }catch(err){
+          addLog(`Error: ${err.message}`,"error");
+          setPushState("error");setPushError(err.message);setTimeout(()=>{setPushState("idle");setPushError("");},6000);
+        }
+      }
+      function savePat(){localStorage.setItem('def-ai-map-pat',pat);addLog("PAT saved to localStorage","info");setShowSettings(false);}
+      async function handleRefresh(){
+        setRefreshState("refreshing");
+        addLog("Refresh started","info");
+        try{
+          const owner="PremierInternational",repo="definian-ai-map",path="definian-ai-map.html";
+          const token=localStorage.getItem('def-ai-map-pat');
+          const headers={Accept:"application/vnd.github+json"};
+          if(token){headers.Authorization=`Bearer ${token}`;addLog("Using stored PAT for auth","info");}
+          else{addLog("No PAT found — using unauthenticated request","info");}
+          addLog(`GET /repos/${owner}/${repo}/contents/${path}`,"info");
+          const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{headers});
+          addLog(`Response: HTTP ${r.status}`,r.ok?"info":"error");
+          if(!r.ok)throw new Error(`GitHub API error ${r.status}`);
+          const{content,sha}=await r.json();
+          addLog(`Got file (SHA: ${sha.slice(0,7)})`,"info");
+          const html=decodeURIComponent(escape(atob(content.replace(/\n/g,""))));
+          const match=html.match(/window\.__INITIAL_DATA__\s*=\s*([\s\S]*?);\s*<\/script>/);
+          if(!match)throw new Error("Could not parse __INITIAL_DATA__ from remote file");
+          const fresh=JSON.parse(match[1]);
+          const nodeCount=getAllNodes(fresh).length;
+          addLog(`Parsed ${nodeCount} nodes from remote file`,"success");
+          setData(fresh);
+          addLog("Data updated — localStorage synced","success");
+          setRefreshState("success");setTimeout(()=>setRefreshState("idle"),3000);
+        }catch(err){
+          addLog(`Error: ${err.message}`,"error");
+          setRefreshState("error");setTimeout(()=>setRefreshState("idle"),4000);
+        }
       }
 
       const selStyle={background:"#0a1240",border:"1px solid #3C405B",color:"#FFFFFF",borderRadius:7,padding:"6px 12px",fontSize:12,cursor:"pointer"};
@@ -837,7 +906,14 @@
                   Data Platform <span style={{color:BRAND.green}}>·</span> AI Integration Map
                 </div>
               </div>
-              <div style={{display:"flex",gap:8,flexShrink:0}}>
+              <div style={{display:"flex",gap:8,flexShrink:0,alignItems:"center"}}>
+                <button onClick={handleRefresh} disabled={refreshState==="refreshing"} title="Pull latest data from GitHub"
+                  style={{background:"transparent",border:`1.5px solid ${refreshState==="success"?"#00AB63":refreshState==="error"?"#ef4444":"#3C405B"}`,
+                    color:refreshState==="success"?"#00AB63":refreshState==="error"?"#f87171":"#8B9CBD",
+                    borderRadius:8,padding:"8px 12px",fontSize:13,cursor:refreshState==="refreshing"?"wait":"pointer",
+                    transition:"all 0.2s",lineHeight:1,opacity:refreshState==="refreshing"?0.6:1}}>
+                  {refreshState==="refreshing"?"⏳":refreshState==="success"?"✓":"↻"}
+                </button>
                 <button onClick={()=>setShowEmbed(e=>!e)}
                   style={{background:"transparent",border:`1.5px solid #4a90d9`,
                     color:"#4a90d9",borderRadius:8,padding:"8px 16px",
@@ -846,14 +922,62 @@
                   ⧉ Embed Code
                 </button>
                 <button onClick={handleExport}
-                  style={{background:exported?BRAND.green:"transparent",border:`1.5px solid ${BRAND.green}`,
-                    color:exported?BRAND.midnight:BRAND.green,borderRadius:8,padding:"8px 16px",
+                  style={{background:exported?"#1e2240":"transparent",border:`1.5px solid #3C405B`,
+                    color:exported?"#D8D7EE":"#8B9CBD",borderRadius:8,padding:"8px 16px",
                     fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",
                     gap:6,transition:"all 0.2s",whiteSpace:"nowrap"}}>
                   {exported?"✓ Downloaded!":"⬇ Export HTML"}
                 </button>
+                <button onClick={()=>setShowSettings(s=>!s)} title="GitHub Settings"
+                  style={{background:showSettings?"#1a2d4f":"transparent",border:`1.5px solid #3C405B`,
+                    color:"#8B9CBD",borderRadius:8,padding:"8px 10px",fontSize:14,cursor:"pointer",
+                    transition:"all 0.2s",lineHeight:1}}>
+                  ⚙
+                </button>
+                <button onClick={handlePush} disabled={pushState==="pushing"}
+                  style={{background:pushState==="success"?BRAND.green:pushState==="error"?"#7f1d1d":BRAND.green,
+                    border:`1.5px solid ${pushState==="error"?"#ef4444":BRAND.green}`,
+                    color:pushState==="error"?"#fca5a5":BRAND.midnight,borderRadius:8,padding:"8px 16px",
+                    fontSize:12,fontWeight:700,cursor:pushState==="pushing"?"wait":"pointer",
+                    display:"flex",alignItems:"center",gap:6,transition:"all 0.2s",whiteSpace:"nowrap",
+                    opacity:pushState==="pushing"?0.7:1}}>
+                  {pushState==="pushing"?"⏳ Pushing...":pushState==="success"?"✓ Pushed!":pushState==="error"?"✗ Failed":"⬆ Save & Push"}
+                </button>
               </div>
             </div>
+
+            {/* GitHub Settings Panel */}
+            {showSettings&&(
+              <div style={{background:"#0a1240",border:"1px solid #3C405B",borderRadius:8,padding:"14px 18px",marginTop:10,marginBottom:6}}>
+                <div style={{fontSize:11,color:BRAND.green,fontFamily:"'Titillium Web',sans-serif",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:10}}>GitHub Settings</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:10,alignItems:"flex-end"}}>
+                  <label style={{display:"flex",flexDirection:"column",gap:4,fontSize:11,color:"#D8D7EE"}}>
+                    <span style={{textTransform:"uppercase",letterSpacing:"0.06em",fontSize:10,color:"#8B9CBD"}}>Personal Access Token (repo write scope)</span>
+                    <input type="password" value={pat} onChange={e=>setPat(e.target.value)} placeholder="ghp_..." style={{background:"#02072D",border:"1px solid #3C405B",borderRadius:6,padding:"6px 10px",fontSize:12,color:"#FFFFFF",outline:"none",width:300,fontFamily:"monospace"}}/>
+                  </label>
+                  <button onClick={savePat} style={{background:BRAND.green,border:"none",borderRadius:7,padding:"7px 16px",fontSize:12,fontWeight:700,color:BRAND.midnight,cursor:"pointer"}}>Save Token</button>
+                  {localStorage.getItem('def-ai-map-pat')&&<button onClick={()=>{localStorage.removeItem('def-ai-map-pat');setPat('');}} style={{background:"transparent",border:"1px solid #7f1d1d",borderRadius:7,padding:"7px 14px",fontSize:12,color:"#f87171",cursor:"pointer"}}>Clear Token</button>}
+                </div>
+                {pushError&&<div style={{fontSize:11,color:"#f87171",marginTop:10,fontFamily:"monospace",wordBreak:"break-all"}}>{pushError}</div>}
+                <div style={{fontSize:10,color:"#4B5A72",marginTop:8}}>Token is stored in your browser only and never committed to the repo.</div>
+                {logs.length>0&&(
+                  <div style={{marginTop:14}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                      <span style={{fontSize:10,color:"#8B9CBD",fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em"}}>Activity Log</span>
+                      <button onClick={()=>setLogs([])} style={{background:"none",border:"none",color:"#4B5A72",fontSize:10,cursor:"pointer",padding:"0 2px"}}>Clear</button>
+                    </div>
+                    <div style={{background:"#02072D",border:"1px solid #1e2240",borderRadius:6,padding:"8px 10px",maxHeight:180,overflowY:"auto",fontFamily:"monospace",fontSize:11,display:"flex",flexDirection:"column",gap:3}}>
+                      {logs.map((l,i)=>(
+                        <div key={i} style={{display:"flex",gap:10,color:l.level==="error"?"#f87171":l.level==="success"?"#00AB63":"#8B9CBD"}}>
+                          <span style={{color:"#4B5A72",flexShrink:0}}>{l.t}</span>
+                          <span>{l.msg}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Divider */}
             <div style={{height:2,background:"linear-gradient(90deg,#00AB63,#0D2C7133)",borderRadius:2,marginBottom:20}}/>
