@@ -58,7 +58,7 @@ let nextId = 100;
 const makeId = () => `node_${nextId++}`;
 const BLANK = {
   name: "", description: "", status: "Not Started", owner: "", nodeType: "AI Agent",
-  model: "", buildType: "—",
+  model: "", buildType: "—", githubRepo: "", dataInput: "—",
   ...Object.fromEntries(EXTRA_FIELDS.map(f => [f.key, f.defaultValue])),
   children: [],
 };
@@ -175,6 +175,10 @@ function NodeCard({ node, depth, filters, onEdit, onDelete, onAddChild, onMove, 
   // Show/hide AI-specific fields based on nodeType in forms
   const editIsAgent = (form.nodeType || "AI Agent") === "AI Agent";
   const newIsAgent  = (newNode.nodeType || "AI Agent") === "AI Agent";
+  const editIsAppOrFeature = ["Application", "Feature"].includes(form.nodeType);
+  const newIsAppOrFeature  = ["Application", "Feature"].includes(newNode.nodeType);
+  const editIsFeatureOrAgent = ["Feature", "AI Agent"].includes(form.nodeType);
+  const newIsFeatureOrAgent  = ["Feature", "AI Agent"].includes(newNode.nodeType);
 
   function nodePassesFilters(n) {
     const selfPass =
@@ -239,6 +243,16 @@ function NodeCard({ node, depth, filters, onEdit, onDelete, onAddChild, onMove, 
               if (!val || val === "—") return null;
               return <span key={f.key}>{f.icon} <b style={{ color: BRAND.white }}>{val}</b></span>;
             })}
+            {node.githubRepo && ["Application", "Feature"].includes(node.nodeType) && (
+              <span>
+                <a href={node.githubRepo} target="_blank" rel="noopener noreferrer" style={{ color: "#4a90d9", textDecoration: "none", fontWeight: 600 }}>
+                  🔗 GitHub
+                </a>
+              </span>
+            )}
+            {node.dataInput && node.dataInput !== "—" && ["Feature", "AI Agent"].includes(node.nodeType) && (
+              <span>🗄️ <b style={{ color: BRAND.white }}>{node.dataInput}</b></span>
+            )}
           </div>
         )}
 
@@ -258,6 +272,18 @@ function NodeCard({ node, depth, filters, onEdit, onDelete, onAddChild, onMove, 
                 {Object.keys(STATUS_CONFIG).map(s => <option key={s}>{s}</option>)}
               </select>
             </Field>
+            {editIsAppOrFeature && (
+              <Field label="GitHub Repo">
+                <input style={{ ...inputStyle, width: 220 }} value={form.githubRepo || ""} onChange={e => setForm(f => ({ ...f, githubRepo: e.target.value }))} placeholder="https://github.com/org/repo" />
+              </Field>
+            )}
+            {editIsFeatureOrAgent && (
+              <Field label="Data Input">
+                <select style={selectStyle} value={form.dataInput || "—"} onChange={e => setForm(f => ({ ...f, dataInput: e.target.value }))}>
+                  {["—", "PostgreSQL", "Excel"].map(o => <option key={o}>{o}</option>)}
+                </select>
+              </Field>
+            )}
             {/* AI Agent-specific fields */}
             {editIsAgent && (
               <>
@@ -304,6 +330,18 @@ function NodeCard({ node, depth, filters, onEdit, onDelete, onAddChild, onMove, 
                 {Object.keys(STATUS_CONFIG).map(s => <option key={s}>{s}</option>)}
               </select>
             </Field>
+            {newIsAppOrFeature && (
+              <Field label="GitHub Repo">
+                <input style={{ ...inputStyle, width: 220 }} value={newNode.githubRepo || ""} onChange={e => setNewNode(f => ({ ...f, githubRepo: e.target.value }))} placeholder="https://github.com/org/repo" />
+              </Field>
+            )}
+            {newIsFeatureOrAgent && (
+              <Field label="Data Input">
+                <select style={selectStyle} value={newNode.dataInput || "—"} onChange={e => setNewNode(f => ({ ...f, dataInput: e.target.value }))}>
+                  {["—", "PostgreSQL", "Excel"].map(o => <option key={o}>{o}</option>)}
+                </select>
+              </Field>
+            )}
             {/* AI Agent-specific fields */}
             {newIsAgent && (
               <>
@@ -383,7 +421,7 @@ function buildExportHTML(data, extraFields) {
     const EXTRA_FIELDS=window.__EXTRA_FIELDS__;
     let nextId=100;
     const makeId=()=>\`node_\${nextId++}\`;
-    const BLANK={name:"",description:"",status:"Not Started",owner:"",nodeType:"AI Agent",model:"",buildType:"—",...Object.fromEntries(EXTRA_FIELDS.map(f=>[f.key,f.defaultValue])),children:[]};
+    const BLANK={name:"",description:"",status:"Not Started",owner:"",nodeType:"AI Agent",model:"",buildType:"—",githubRepo:"",dataInput:"—",...Object.fromEntries(EXTRA_FIELDS.map(f=>[f.key,f.defaultValue])),children:[]};
     function updateNode(t,id,u){if(t.id===id)return{...t,...u};return{...t,children:t.children.map(c=>updateNode(c,id,u))};}
     function deleteNode(t,id){return{...t,children:t.children.filter(c=>c.id!==id).map(c=>deleteNode(c,id))};}
     function addChild(t,pid,child){if(t.id===pid)return{...t,children:[...t.children,child]};return{...t,children:t.children.map(c=>addChild(c,pid,child))};}
@@ -409,6 +447,10 @@ function buildExportHTML(data, extraFields) {
       const headerBg=depth===0?BRAND.midnightLight:depth===1?"#071040":"#0d1535";
       const editIsAgent=(form.nodeType||"AI Agent")==="AI Agent";
       const newIsAgent=(newNode.nodeType||"AI Agent")==="AI Agent";
+      const editIsAppOrFeature=["Application","Feature"].includes(form.nodeType);
+      const newIsAppOrFeature=["Application","Feature"].includes(newNode.nodeType);
+      const editIsFeatureOrAgent=["Feature","AI Agent"].includes(form.nodeType);
+      const newIsFeatureOrAgent=["Feature","AI Agent"].includes(newNode.nodeType);
       function npf(n){
         const sp=(!filters.status||n.status===filters.status)&&(!filters.owner||n.owner===filters.owner)&&(!filters.buildType||n.buildType===filters.buildType)&&(!filters.nodeType||(n.nodeType||"AI Agent")===filters.nodeType);
         if(!n.children||n.children.length===0)return sp;
@@ -442,6 +484,8 @@ function buildExportHTML(data, extraFields) {
             {node.model!=="—"&&node.model&&<span>🤖 <b style={{color:BRAND.white}}>{node.model}</b></span>}
             {node.buildType!=="—"&&node.buildType&&<span style={{color:bc.color}}>{bc.icon} <b>{node.buildType}</b></span>}
             {EXTRA_FIELDS.map(f=>{const val=node[f.key];if(!val||val==="—")return null;return<span key={f.key}>{f.icon} <b style={{color:BRAND.white}}>{val}</b></span>;})}
+            {node.githubRepo&&["Application","Feature"].includes(node.nodeType)&&<span><a href={node.githubRepo} target="_blank" rel="noopener noreferrer" style={{color:"#4a90d9",textDecoration:"none",fontWeight:600}}>🔗 GitHub</a></span>}
+            {node.dataInput&&node.dataInput!=="—"&&["Feature","AI Agent"].includes(node.nodeType)&&<span>🗄️ <b style={{color:BRAND.white}}>{node.dataInput}</b></span>}
           </div>)}
           {editing&&(<div style={{padding:"12px 14px",background:"#040d2a",display:"flex",flexWrap:"wrap",gap:10,borderTop:\`1px solid \${BRAND.darkGray}\`}} onClick={e=>e.stopPropagation()}>
             <Field label="Name"><input style={iS} value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))}/></Field>
@@ -449,6 +493,8 @@ function buildExportHTML(data, extraFields) {
             <Field label="Description"><input style={{...iS,width:220}} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/></Field>
             <Field label="Owner"><input style={iS} value={form.owner} onChange={e=>setForm(f=>({...f,owner:e.target.value}))}/></Field>
             <Field label="Status"><select style={sS} value={form.status} onChange={e=>setForm(f=>({...f,status:e.target.value}))}>{Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
+            {editIsAppOrFeature&&<Field label="GitHub Repo"><input style={{...iS,width:220}} value={form.githubRepo||""} onChange={e=>setForm(f=>({...f,githubRepo:e.target.value}))} placeholder="https://github.com/org/repo"/></Field>}
+            {editIsFeatureOrAgent&&<Field label="Data Input"><select style={sS} value={form.dataInput||"—"} onChange={e=>setForm(f=>({...f,dataInput:e.target.value}))}>{["—","PostgreSQL","Excel"].map(o=><option key={o}>{o}</option>)}</select></Field>}
             {editIsAgent&&(<>
               <Field label="Model"><input style={iS} value={form.model} onChange={e=>setForm(f=>({...f,model:e.target.value}))} placeholder="e.g. GPT-4o"/></Field>
               <Field label="Build Type"><select style={sS} value={form.buildType} onChange={e=>setForm(f=>({...f,buildType:e.target.value}))}>{Object.keys(BUILD_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
@@ -463,6 +509,8 @@ function buildExportHTML(data, extraFields) {
             <Field label="Description"><input style={{...iS,width:220}} value={newNode.description} onChange={e=>setNewNode(f=>({...f,description:e.target.value}))} placeholder="What does it do?"/></Field>
             <Field label="Owner"><input style={iS} value={newNode.owner} onChange={e=>setNewNode(f=>({...f,owner:e.target.value}))} placeholder="Name or team"/></Field>
             <Field label="Status"><select style={sS} value={newNode.status} onChange={e=>setNewNode(f=>({...f,status:e.target.value}))}>{Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
+            {newIsAppOrFeature&&<Field label="GitHub Repo"><input style={{...iS,width:220}} value={newNode.githubRepo||""} onChange={e=>setNewNode(f=>({...f,githubRepo:e.target.value}))} placeholder="https://github.com/org/repo"/></Field>}
+            {newIsFeatureOrAgent&&<Field label="Data Input"><select style={sS} value={newNode.dataInput||"—"} onChange={e=>setNewNode(f=>({...f,dataInput:e.target.value}))}>{["—","PostgreSQL","Excel"].map(o=><option key={o}>{o}</option>)}</select></Field>}
             {newIsAgent&&(<>
               <Field label="Model"><input style={iS} value={newNode.model} onChange={e=>setNewNode(f=>({...f,model:e.target.value}))} placeholder="e.g. GPT-4o"/></Field>
               <Field label="Build Type"><select style={sS} value={newNode.buildType} onChange={e=>setNewNode(f=>({...f,buildType:e.target.value}))}>{Object.keys(BUILD_CONFIG).map(s=><option key={s}>{s}</option>)}</select></Field>
