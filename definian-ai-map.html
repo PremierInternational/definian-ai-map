@@ -489,7 +489,7 @@
     const EXTRA_FIELDS=window.__EXTRA_FIELDS__;
     let nextId=200;
     const makeId=()=>`node_${nextId++}`;
-    const BLANK={name:"",description:"",status:"Not Started",owner:"",nodeType:"AI Agent",model:"",buildType:"—",...Object.fromEntries(EXTRA_FIELDS.map(f=>[f.key,f.defaultValue])),children:[]};
+    const BLANK={name:"",description:"",status:"Not Started",owner:"",nodeType:"AI Agent",model:"",buildType:"—",githubRepo:"",...Object.fromEntries(EXTRA_FIELDS.map(f=>[f.key,f.defaultValue])),children:[]};
 
     function updateNode(t,id,u){if(t.id===id)return{...t,...u};return{...t,children:t.children.map(c=>updateNode(c,id,u))};}
     function deleteNode(t,id){return{...t,children:t.children.filter(c=>c.id!==id).map(c=>deleteNode(c,id))};}
@@ -551,6 +551,8 @@
       const headerBg=depth===0?BRAND.midnightLight:depth===1?"#071040":"#0d1535";
       const editIsAgent=(form.nodeType||"AI Agent")==="AI Agent";
       const newIsAgent=(newNode.nodeType||"AI Agent")==="AI Agent";
+      const editIsAppOrFeature=["Application","Feature"].includes(form.nodeType);
+      const newIsAppOrFeature=["Application","Feature"].includes(newNode.nodeType);
 
       function npf(n){
         const sp=(!filters.status||n.status===filters.status)&&(!filters.owner||n.owner===filters.owner)&&(!filters.buildType||n.buildType===filters.buildType)&&(!filters.nodeType||(n.nodeType||"AI Agent")===filters.nodeType);
@@ -606,6 +608,7 @@
                 {node.model!=="\u2014"&&node.model&&<span>🤖 <b style={{color:BRAND.white}}>{node.model}</b></span>}
                 {node.buildType!=="\u2014"&&node.buildType&&<span style={{color:bc.color}}>{bc.icon} <b>{node.buildType}</b></span>}
                 {EXTRA_FIELDS.map(f=>{const val=node[f.key];if(!val||val==="\u2014")return null;return<span key={f.key}>{f.icon} <b style={{color:BRAND.white}}>{val}</b></span>;})}
+                {node.githubRepo&&["Application","Feature"].includes(node.nodeType)&&<span><a href={node.githubRepo} target="_blank" rel="noopener noreferrer" style={{color:"#4a90d9",textDecoration:"none",fontWeight:600}}>🔗 GitHub</a></span>}
               </div>
             )}
 
@@ -626,6 +629,7 @@
                     {Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}
                   </select>
                 </Field>
+                {editIsAppOrFeature&&<Field label="GitHub Repo"><input style={{...iS,width:220}} value={form.githubRepo||""} onChange={e=>setForm(f=>({...f,githubRepo:e.target.value}))} placeholder="https://github.com/org/repo"/></Field>}
                 {editIsAgent&&(
                   <>
                     <Field label="Model"><input style={iS} value={form.model} onChange={e=>setForm(f=>({...f,model:e.target.value}))} placeholder="e.g. GPT-4o"/></Field>
@@ -674,6 +678,7 @@
                     {Object.keys(STATUS_CONFIG).map(s=><option key={s}>{s}</option>)}
                   </select>
                 </Field>
+                {newIsAppOrFeature&&<Field label="GitHub Repo"><input style={{...iS,width:220}} value={newNode.githubRepo||""} onChange={e=>setNewNode(f=>({...f,githubRepo:e.target.value}))} placeholder="https://github.com/org/repo"/></Field>}
                 {newIsAgent&&(
                   <>
                     <Field label="Model"><input style={iS} value={newNode.model} onChange={e=>setNewNode(f=>({...f,model:e.target.value}))} placeholder="e.g. GPT-4o"/></Field>
